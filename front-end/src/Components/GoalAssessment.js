@@ -4,30 +4,34 @@ import { graphql, gql } from "react-apollo";
 import { get } from "lodash";
 
 import {
-  FormGroup,
-  ControlLabel,
+  Container,
+  Grid,
   Form,
-  FormControl,
-  HelpBlock,
-  Col,
+  Header,
   Button,
-  ButtonGroup,
-  ToggleButtonGroup,
-  ToggleButton
-} from "react-bootstrap";
+  TextArea,
+  Input
+} from "semantic-ui-react";
+
+function FieldGroup2({ id, label, help, ...props }) {
+  return (
+    <Grid celled columns={4} stackable textAlign="left" verticalAlign="middle">
+      <Grid.Row>
+        <Grid.Column columns={1}>
+          <Form.Field inline>
+            <label htmlFor={id}>{label}</label>
+          </Form.Field>
+        </Grid.Column>
+        <Grid.Column columns={3}>
+          <Form.Field id={id} {...props} />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  );
+}
 
 function FieldGroup({ id, label, help, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <Col componentClass={ControlLabel} sm={2}>
-        {label}
-      </Col>
-      <Col sm={10}>
-        <FormControl {...props} />
-        {help && <HelpBlock>{help}</HelpBlock>}
-      </Col>
-    </FormGroup>
-  );
+  return <Form.Field id={id} label={label} {...props} />;
 }
 
 class GoalAssessment extends React.Component {
@@ -53,13 +57,13 @@ class GoalAssessment extends React.Component {
       .mutate({
         variables: {
           assessmentId: this.props.assessmentId,
-          goalNumber: this.props.goal,
+          goalNumber: this.props.goal.number,
           goalId: get(this.props.goalAssessment, "id", ""),
           ...this.state
         }
       })
       .then(({ data }) => {
-        console.log("got data", data);
+        console.log("got response from update", data);
       })
       .catch(error => {
         console.log("there was an error sending the query", error);
@@ -67,94 +71,87 @@ class GoalAssessment extends React.Component {
   };
   render() {
     return (
-      <div>
-        <h1>{this.props.goal}</h1>
-        <Form horizontal>
-          <FormGroup controlId="rating">
-            <Col componentClass={ControlLabel} sm={2}>
-              Rating
-            </Col>
-            <Col sm={10}>
-              <ButtonGroup>
-                <ToggleButtonGroup
-                  type="radio"
-                  name="options"
-                  value={this.state.rating}
-                  onChange={rating => {
-                    this.setState({ rating });
-                  }}
-                >
-                  <ToggleButton
-                    value="Green"
-                    bsStyle={
-                      this.state.rating === "Green" ? "success" : "default"
-                    }
-                  >
-                    Pass
-                  </ToggleButton>
-                  <ToggleButton
-                    value="Amber"
-                    bsStyle={
-                      this.state.rating === "Amber" ? "warning" : "default"
-                    }
-                  >
-                    In Progress
-                  </ToggleButton>
-                  <ToggleButton
-                    value="Red"
-                    bsStyle={this.state.rating === "Red" ? "danger" : "default"}
-                  >
-                    Fail
-                  </ToggleButton>
-                  <ToggleButton value="NA">Not Assessed</ToggleButton>
-                </ToggleButtonGroup>
-              </ButtonGroup>
-            </Col>
-          </FormGroup>
+      <Container>
+        <Header as="h1">
+          {"#" + this.props.goal.number + ". " + this.props.goal.summary}
+        </Header>
+        <Form onSubmit={this.handleSave}>
+          <Form.Field id="rating">
+            <label>Rating</label>
+            <Button.Group
+              onClick={evt => {
+                this.setState({ rating: evt.target.value });
+              }}
+            >
+              <Button
+                value="Green"
+                color={this.state.rating === "Green" ? "green" : null}
+              >
+                Pass
+              </Button>
+              <Button
+                value="Amber"
+                color={this.state.rating === "Amber" ? "orange" : null}
+              >
+                In progress
+              </Button>
+              <Button
+                value="Red"
+                color={this.state.rating === "Red" ? "red" : null}
+              >
+                Failing
+              </Button>
+              <Button
+                value="NA"
+                color={this.state.rating === "NA" ? "grey" : null}
+              >
+                Not assessed
+              </Button>
+            </Button.Group>
+          </Form.Field>
+
           <FieldGroup
             id="assessor"
             label="Assessed by"
-            type="text"
+            control={Input}
             value={this.state.assessor}
             onChange={this.handleChange}
           />
           <FieldGroup
+            control={TextArea}
             id="positiveComments"
             label="Positive comments"
-            componentClass="textarea"
             value={this.state.positiveComments}
             onChange={this.handleChange}
+            placeholder="What awesome things were shown in this assessment?"
           />
           <FieldGroup
+            control={TextArea}
             id="areasForImprovement"
             label="Areas for improvement"
-            componentClass="textarea"
             value={this.state.areasForImprovement}
             onChange={this.handleChange}
+            placeholder="What things could be improved for next assessment?"
           />
           <FieldGroup
+            control={TextArea}
             id="evidence"
             label="Evidence"
-            componentClass="textarea"
             value={this.state.evidence}
             onChange={this.handleChange}
+            placeholder="What evidence was presented for this goal?"
           />
-          <FormGroup>
-            <Col smOffset={2} sm={10}>
-              <Button bsStyle="primary" onClick={this.handleSave}>
-                Save
-              </Button>
-            </Col>
-          </FormGroup>
+          <Form.Button primary>Save</Form.Button>
         </Form>
-      </div>
+      </Container>
     );
   }
 }
 
 GoalAssessment.propTypes = {
   assessmentId: PropTypes.string.isRequired,
-  goal: PropTypes.number.isRequired
+  goal: PropTypes.object.isRequired,
+  goalAssessment: PropTypes.object
 };
 
 const updateGoal = gql`

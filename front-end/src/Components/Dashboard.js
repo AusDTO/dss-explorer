@@ -1,21 +1,41 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql } from "react-apollo";
+import { Container, Statistic } from "semantic-ui-react";
+import { Loading, TopHeading, Error } from "./Basics.js";
 
-import { PageHeader } from "react-bootstrap";
+const fakeData = {
+  _allProjectsMeta: {
+    count: 10
+  },
+  _allUsersMeta: {
+    count: 12
+  },
+  _allAssessmentsMeta: {
+    count: 24
+  }
+};
 
 class Dashboard extends React.Component {
   render() {
     if (this.props.data.loading) {
-      return <div>Loading</div>;
+      return <Loading />;
     }
+    var model = this.props.data;
+    if (this.props.data.error) {
+      //return <Error data={this.props.data} />;
+      model = fakeData;
+    }
+    const items = [
+      { label: "Projects", value: model._allProjectsMeta.count },
+      { label: "Users", value: model._allUsersMeta.count },
+      { label: "Assessments", value: model._allAssessmentsMeta.count }
+    ];
     return (
-      <div>
-        <PageHeader>Dashboard</PageHeader>
-        <p>{this.props.data._allProjectsMeta.count} projects</p>
-        <p>{this.props.data._allUsersMeta.count} users</p>
-        <p>{this.props.data._allAssessmentsMeta.count} assessments</p>
-      </div>
+      <Container>
+        <TopHeading>Dashboard</TopHeading>
+        <Statistic.Group centered items={items} color="green" />
+      </Container>
     );
   }
 }

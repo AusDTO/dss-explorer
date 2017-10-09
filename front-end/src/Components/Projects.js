@@ -2,32 +2,70 @@ import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql } from "react-apollo";
 
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
-import ProjectRow from "./ProjectRow";
+import { Loading, TopHeading, Error } from "./Basics.js";
+import { Container, Item, Button } from "semantic-ui-react";
+
+const fakeData = {
+  allProjects: [
+    {
+      id: "a",
+      name: "Identity - IDP",
+      organisation: "Digital Transformation Agency",
+      contact: "Meera Pankhurst",
+      leadAssessor: "Leisa",
+      createdAt: "2017-01-19"
+    },
+    {
+      id: "a",
+      name: "Marketplace",
+      organisation: "Digital Transformation Agency",
+      contact: "Michael Yettle",
+      leadAssessor: "Leisa Agora",
+      createdAt: "2017-01-19"
+    },
+    {
+      id: "b",
+      name: "WHIPIT",
+      organisation: "Dept of Human Services",
+      contact: "Egbert Tran",
+      leadAssessor: "Meera Pankhurst",
+      createdAt: "2017-01-19"
+    }
+  ]
+};
 
 class ProjectList extends React.Component {
   render() {
     if (this.props.data.loading) {
-      return <div>Loading</div>;
+      return <Loading />;
+    }
+    var model = this.props.data;
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+      //model = fakeData;
     }
     return (
-      <div>
-        <PageHeader>Projects</PageHeader>
-        <ListGroup>
-          {this.props.data.allProjects.map(proj => {
-            const project = {
-              href: "/project/" + proj.id,
-              assessmentCount: proj._assessmentsMeta.count,
-              ...proj
-            };
+      <Container>
+        <TopHeading>Projects</TopHeading>
+        <Item.Group divided>
+          {model.allProjects.map(proj => {
+            const href = "/project/" + proj.id;
             return (
-              <ListGroupItem key={project.id} href={project.href}>
-                <ProjectRow project={project} />
-              </ListGroupItem>
+              <Item key={proj.id} href={href}>
+                <Item.Content>
+                  <Item.Header>{proj.name}</Item.Header>
+                  <Item.Description>{proj.organisation}</Item.Description>
+                  <Item.Extra>
+                    Contact: {proj.contact}
+                    <br />
+                    Lead assessor: {proj.leadAssessor}
+                  </Item.Extra>
+                </Item.Content>
+              </Item>
             );
           })}
-        </ListGroup>
-      </div>
+        </Item.Group>
+      </Container>
     );
   }
 }
@@ -38,13 +76,17 @@ ProjectList.propTypes = {
 
 const ProjectListQuery = gql`
   query ProjectListQuery {
-    allProjects {
+    allProjects(orderBy: name_ASC) {
       id
       name
+      organisation
       contact
+      leadAssessor
       createdAt
-      _assessmentsMeta {
-        count
+      assessments(orderBy: when_DESC) {
+        id
+        when
+        summary
       }
     }
   }
