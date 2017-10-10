@@ -5,11 +5,10 @@ import Logo from "./Logo.js";
 class PageFooter extends React.Component {
   render() {
     return (
-      <div>
-        <Segment inverted style={{ padding: "0.1em 0em" }}>
+      <div style={{ margin: "1em 0.5em 0em 0.5em" }}>
+        <Segment inverted>
           <Container textAlign="center">
-            <Divider inverted section />
-            <div style={{ margin: "1em" }}>
+            <div>
               <Logo centered />
             </div>
             <List horizontal inverted divided link>

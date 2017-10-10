@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { graphql, gql } from "react-apollo";
-import { Loading, TopHeading, Error } from "./Basics.js";
+import moment from "moment";
+import { graphql, gql, compose } from "react-apollo";
+import { Loading, TopInnerHeading, Error } from "./Basics.js";
 import {
   Container,
   Menu,
@@ -15,9 +16,10 @@ import Timestamp from "./Timestamp";
 import GoalLight from "./GoalLight";
 import GoalAssessment from "./GoalAssessment";
 import Goals from "./Goals";
+import DateInput from "./DateInput";
 
 const fakeData = {
-  id: "cj8dvy6da1olc0195hy26ayqe",
+  id: "cj8dvy6da1olc0195hy26ayqed",
   when: "2017-10-05T03:11:13.052Z",
   summary: "Good effort. Needs to try harder.",
   project: {
@@ -56,22 +58,52 @@ class AssessmentPage extends React.Component {
     this.state = {};
   }
   handleChange = e => {
-    this.setState({ [e.target.id]: e.target.value });
+    this.setState({ changed: true, [e.target.id]: e.target.value });
+  };
+  handleBlur = e => {
+    console.log("blur", this.state.changed);
+    if (this.state.changed) {
+      this.setState({ changed: false });
+      this.handleSave(this.state);
+    }
+  };
+  handleSave = ({ id, when, leadAssessor, summary }) => {
+    console.log("saving assessment", id, when, leadAssessor, summary);
+    this.props
+      .updateAssessmentMutation({
+        variables: {
+          id: id,
+          when: moment(when),
+          leadAssessor: leadAssessor,
+          summary: summary
+        }
+      })
+      .then(({ data }) => {
+        console.log("got data", data);
+      })
+      .catch(error => {
+        console.log("there was an error creating the assessment", error);
+      });
   };
   render() {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    // if (this.props.data.error) {
-    //   return <Error data={this.props.data} />;
-    // }
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+    }
     var model = get(this.props.data, "Assessment", fakeData);
     if (!model) {
       return <div>Unknown assessment</div>;
     }
     // Initialize state -- can't do this in the constructor since the data is still loading at that point
     if (!this.state.when) {
-      this.state = { ...model };
+      const dt = moment(model.when);
+      this.state = {
+        ...model,
+        summary: model.summary || "",
+        when: dt.isValid ? dt.format("D MMM YYYY") : model.when
+      };
     }
     const panels = Goals.map(goal => {
       const goalAssessment = model.goalAssessments.find(
@@ -81,7 +113,7 @@ class AssessmentPage extends React.Component {
         menuItem: (
           <Menu.Item key={goal.number} fitted>
             <div className="something" style={{ margin: "0.5em" }}>
-              <GoalLight goal={goal} assessment={model} size="big" />
+              <GoalLight text={goal.number} ga={goalAssessment} size="big" />
             </div>
           </Menu.Item>
         ),
@@ -116,19 +148,30 @@ class AssessmentPage extends React.Component {
     return (
       <Container>
         <Breadcrumb divider="/" sections={breadcrumbs} />
-        <TopHeading>
-          {"Assessment of " + model.project.name + " - "}
-          <Timestamp when={model.when} />
-        </TopHeading>
+
         <Segment>
-          <Input
+          <TopInnerHeading>
+            {"Assessment of " + model.project.name + " - "}
+            <Timestamp when={model.when} />
+          </TopInnerHeading>
+          <DateInput
             fluid
             label="When"
             id="when"
             value={this.state.when}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           />
-          <div />
+          <div style={{ paddingTop: "0.5em" }} />
+          <Input
+            fluid
+            id="leadAssessor"
+            label="Lead Assessor"
+            value={this.state.leadAssessor}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <div style={{ paddingTop: "0.5em" }} />
           <Input
             fluid
             id="summary"
@@ -136,6 +179,7 @@ class AssessmentPage extends React.Component {
             value={this.state.summary}
             type="textarea"
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           />
         </Segment>
         <Tab
@@ -158,6 +202,7 @@ const AssessmentPageQuery = gql`
       id
       when
       summary
+      leadAssessor
       project {
         id
         name
@@ -175,10 +220,33 @@ const AssessmentPageQuery = gql`
   }
 `;
 
-export default graphql(AssessmentPageQuery, {
-  options: props => ({
-    variables: {
-      assessmentId: props.match.params.id
+const UpdateAssessmentMutation = gql`
+  mutation UpdateAssessmentMutation(
+    $id: ID!
+    $when: DateTime!
+    $leadAssessor: String
+    $summary: String
+  ) {
+    updateAssessment(
+      id: $id
+      when: $when
+      leadAssessor: $leadAssessor
+      summary: $summary
+    ) {
+      id
+      updatedAt
     }
+  }
+`;
+
+export default compose(
+  graphql(UpdateAssessmentMutation, { name: "updateAssessmentMutation" }),
+  graphql(AssessmentPageQuery, {
+    name: "data",
+    options: props => ({
+      variables: {
+        assessmentId: props.match.params.id
+      }
+    })
   })
-})(AssessmentPage);
+)(AssessmentPage);

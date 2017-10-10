@@ -1,0 +1,59 @@
+# project: cj8d0cdxq04f40144ryvk4vf4
+# version: 33
+
+type Assessment implements Node {
+  id: ID! @isUnique
+  project: Project @relation(name: "ProjectOnAssessment")
+  summary: String
+  when: DateTime!
+  createdAt: DateTime!
+  goalAssessments: [GoalAssessment!]! @relation(name: "AssessmentGoals")
+  leadAssessor: String
+}
+
+type Project implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String! @isUnique
+  leadAssessor: String
+  assessments: [Assessment!]! @relation(name: "ProjectOnAssessment")
+  contact: String
+  nextAssessment: DateTime
+  organisation: String
+}
+
+type File implements Node {
+  contentType: String!
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  updatedAt: DateTime!
+  url: String! @isUnique
+}
+
+type User implements Node {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type GoalAssessment implements Node {
+  areasForImprovement: String
+  assessor: String
+  evidence: String
+  goalNumber: Int!
+  id: ID! @isUnique
+  positiveComments: String
+  rating: Rating! @defaultValue(value: NA)
+  assessment: Assessment @relation(name: "AssessmentGoals")
+  updatedAt: DateTime!
+}
+
+enum Rating {
+  Green
+  Amber
+  Red
+  NA
+}

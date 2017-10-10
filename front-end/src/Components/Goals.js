@@ -1,3 +1,23 @@
+import { get } from "lodash";
+
+export const CalculateRatingColor = (goalAssessment, defaultColor = null) => {
+  var rating = get(goalAssessment, "rating");
+  if (rating === "Red") return "red";
+  if (rating === "Amber") return "orange";
+  if (rating === "Green") return "green";
+  if (rating === "NA") return "grey";
+  return defaultColor;
+};
+
+export const CalculateRatingText = goalAssessment => {
+  var rating = get(goalAssessment, "rating");
+  if (rating === "Red") return "Failing";
+  if (rating === "Amber") return "In progress";
+  if (rating === "Green") return "Pass";
+  if (rating === "NA") return "Not assessed";
+  return null;
+};
+
 const Goals = [
   {
     number: 1,

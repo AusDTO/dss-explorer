@@ -1,18 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router";
 import { get } from "lodash";
-import { graphql, gql } from "react-apollo";
-import { Loading, TopHeading, Error } from "./Basics.js";
+import moment from "moment";
+import { graphql, gql, compose } from "react-apollo";
+import { Loading, TopInnerHeading, Error } from "./Basics.js";
 import {
   Container,
   Button,
-  Grid,
   Table,
   Item,
-  Segment
+  Segment,
+  Breadcrumb,
+  Input
 } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
+import DateInput from "./DateInput";
 
 const fakeData = {
   id: "fakeId1",
@@ -23,7 +27,7 @@ const fakeData = {
   createdAt: "2016-03-27",
   assessments: [
     {
-      id: "cj8dvy6da1olc0195hy26ayqe",
+      id: "cj8dvy6da1olc0195hy26ayqeA",
       when: "2017-10-05T03:11:13.052Z",
       summary: "Good effort. Needs to try harder.",
       leadAssessor: "Leisa Reichart",
@@ -54,7 +58,7 @@ const fakeData = {
       __typename: "Assessment"
     },
     {
-      id: "cj8dvy6da1olc0195hy26ayqe",
+      id: "cj8dvy6da1olc0195hy26ayqeB",
       when: "2017-09-17T03:11:13.052Z",
       summary: "Terrible. There are simply no words :(",
       leadAssessor: "Julie Reynolds",
@@ -68,7 +72,7 @@ const fakeData = {
           assessor: "tyu",
           evidence: "",
           goalNumber: 1,
-          id: "cj8fhvyii7l5v0100zy3qdxkn",
+          id: "cj8fhvyii7l5v0100zy3qdxknA",
           positiveComments: "mostly positive",
           rating: "Red"
         },
@@ -77,7 +81,7 @@ const fakeData = {
           assessor: "",
           evidence: "",
           goalNumber: 2,
-          id: "cj8fhwp4zaav30112dm82xp2o",
+          id: "cj8fhwp4zaav30112dm82xp2oB",
           positiveComments: "",
           rating: "Amber"
         },
@@ -86,7 +90,7 @@ const fakeData = {
           assessor: "",
           evidence: "",
           goalNumber: 3,
-          id: "cj8fhwp4zaav30112dm82xp2o",
+          id: "cj8fhwp4zaav30112dm82xp2oC",
           positiveComments: "",
           rating: "Amber"
         }
@@ -97,6 +101,66 @@ const fakeData = {
 };
 
 class ProjectAssessments extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  handleChange = e => {
+    this.setState({ changed: true, [e.target.id]: e.target.value });
+  };
+
+  handleBlur = e => {
+    console.log("blur", this.state.changed);
+    if (this.state.changed) {
+      this.setState({ changed: false });
+      this.handleSave(this.state);
+    }
+  };
+
+  handleSave = ({ id, contact, leadAssessor, nextAssessment }) => {
+    console.log(
+      "updating project details",
+      contact,
+      leadAssessor,
+      nextAssessment
+    );
+    this.props
+      .updateProjectMutation({
+        variables: {
+          projId: id,
+          contact: contact,
+          leadAssessor: leadAssessor,
+          nextAssessment: moment(nextAssessment)
+        }
+      })
+      .then(({ data }) => {
+        console.log("saved data", data);
+      })
+      .catch(error => {
+        console.log("there was an error saving the project details", error);
+      });
+  };
+
+  handleCreate = (projectId, leadAssessor) => {
+    console.log("creating assessment", projectId);
+    this.props
+      .createAssessmentMutation({
+        variables: {
+          projId: projectId,
+          when: new Date(),
+          leadAssessor: leadAssessor
+        }
+      })
+      .then(({ data }) => {
+        console.log("got data", data);
+        this.props.history.push("/assessment/" + data.createAssessment.id);
+      })
+      .catch(error => {
+        console.log("there was an error creating the assessment", error);
+      });
+  };
+
   render() {
     if (this.props.data.loading) {
       return <Loading />;
@@ -108,29 +172,70 @@ class ProjectAssessments extends React.Component {
     if (!model) {
       return <div>Unknown project</div>;
     }
+    // Initialize state -- can't do this in the constructor since the data is still loading at that point
+    if (!this.state.id) {
+      const dt = moment(model.nextAssessment);
+      this.state = {
+        ...model,
+        contact: model.contact || "",
+        leadAssessor: model.leadAssessor || "",
+        nextAssessment: dt.isValid() ? dt.format("D MMM YYYY") : ""
+      };
+    }
+
+    const breadcrumbs = [
+      { key: "home", content: "Home", href: "/" },
+      { key: "projects", content: "Projects", href: "/projects" },
+      { key: "project", content: model.name, active: true }
+    ];
+
     return (
       <Container>
-        <TopHeading>{"Project - " + model.name}</TopHeading>
+        <Breadcrumb divider="/" sections={breadcrumbs} />
         <Segment>
-          <Grid columns={2} verticalAlign="middle">
-            <Grid.Row>
-              <Grid.Column>
-                Contact: {model.contact}
-                <br />
-                Lead assessor: {model.leadAssessor}
-                <br />
-                Next assessment: [Not yet schedule]
-              </Grid.Column>
-              <Grid.Column textAlign="right">
-                <Button primary>New Asssessment</Button>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+          <TopInnerHeading>{"Project - " + model.name}</TopInnerHeading>
+          <Input
+            fluid
+            id="contact"
+            label="Contact"
+            value={this.state.contact}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <div style={{ paddingTop: "0.5em" }} />
+          <Input
+            fluid
+            id="leadAssessor"
+            label="Lead Assessor"
+            value={this.state.leadAssessor}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <div style={{ paddingTop: "0.5em" }} />
+          <DateInput
+            fluid
+            id="nextAssessment"
+            label="Next Assessment"
+            value={this.state.nextAssessment}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
         </Segment>
         <Table>
           <Table.Header fullWidth>
             <Table.Row>
-              <Table.HeaderCell colSpan={3}>Assessments</Table.HeaderCell>
+              <Table.HeaderCell style={{ fontSize: "1.5rem" }}>
+                Assessments
+              </Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">
+                <Button
+                  primary
+                  icon="star"
+                  content="New Assessment"
+                  onClick={() =>
+                    this.handleCreate(model.id, model.leadAssessor)}
+                />
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -152,9 +257,6 @@ class ProjectAssessments extends React.Component {
                         </Item.Content>
                       </Item>
                     </Item.Group>
-                    {/* <ButtonLink href={href}>
-                      <Timestamp when={assessment.when} />
-                    </ButtonLink> */}
                   </Table.Cell>
                   <Table.Cell>
                     <GoalsLightBoard assessment={assessment} />
@@ -186,19 +288,63 @@ const ProjectAssessmentsQuery = gql`
         id
         when
         summary
+        leadAssessor
         goalAssessments {
           goalNumber
           rating
+          assessor
+          positiveComments
+          areasForImprovement
         }
       }
     }
   }
 `;
 
-export default graphql(ProjectAssessmentsQuery, {
-  options: props => ({
-    variables: {
-      projId: props.match.params.id
+const UpdateProjectMutation = gql`
+  mutation UpdateProjectMutation(
+    $projId: ID!
+    $contact: String
+    $leadAssessor: String
+    $nextAssessment: DateTime
+  ) {
+    updateProject(
+      id: $projId
+      contact: $contact
+      leadAssessor: $leadAssessor
+      nextAssessment: $nextAssessment
+    ) {
+      id
+      updatedAt
     }
+  }
+`;
+
+const CreateAssessmentMutation = gql`
+  mutation CreateAssessmentMutation(
+    $projId: ID!
+    $when: DateTime!
+    $leadAssessor: String
+  ) {
+    createAssessment(
+      when: $when
+      projectId: $projId
+      leadAssessor: $leadAssessor
+    ) {
+      id
+    }
+  }
+`;
+
+export default compose(
+  graphql(UpdateProjectMutation, { name: "updateProjectMutation" }),
+  graphql(CreateAssessmentMutation, { name: "createAssessmentMutation" }),
+  graphql(ProjectAssessmentsQuery, {
+    name: "data",
+    options: props => ({
+      variables: {
+        projId: props.match.params.id
+      }
+    })
   })
-})(ProjectAssessments);
+)(withRouter(ProjectAssessments));

@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql } from "react-apollo";
 
-import { Loading, TopHeading, Error } from "./Basics.js";
-import { Container, Item, Button } from "semantic-ui-react";
+import { Loading, TopInnerHeading, Error } from "./Basics.js";
+import { Container, Item, Statistic, Segment } from "semantic-ui-react";
 
 const fakeData = {
   allProjects: [
@@ -39,32 +39,42 @@ class ProjectList extends React.Component {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    var model = this.props.data;
     if (this.props.data.error) {
       return <Error data={this.props.data} />;
-      //model = fakeData;
     }
+    const models = this.props.data.allProjects || fakeData;
     return (
       <Container>
-        <TopHeading>Projects</TopHeading>
-        <Item.Group divided>
-          {model.allProjects.map(proj => {
-            const href = "/project/" + proj.id;
-            return (
-              <Item key={proj.id} href={href}>
-                <Item.Content>
-                  <Item.Header>{proj.name}</Item.Header>
-                  <Item.Description>{proj.organisation}</Item.Description>
-                  <Item.Extra>
-                    Contact: {proj.contact}
-                    <br />
-                    Lead assessor: {proj.leadAssessor}
-                  </Item.Extra>
-                </Item.Content>
-              </Item>
-            );
-          })}
-        </Item.Group>
+        <Segment>
+          <TopInnerHeading>Projects</TopInnerHeading>
+          <Item.Group divided>
+            {models.map(proj => {
+              return (
+                <Item key={proj.id} href={"/project/" + proj.id}>
+                  <Item.Image size="tiny">
+                    <Statistic
+                      size="tiny"
+                      label={
+                        "Assessment" +
+                        (proj.assessments.length === 1 ? "" : "s")
+                      }
+                      value={proj.assessments.length}
+                    />
+                  </Item.Image>
+                  <Item.Content>
+                    <Item.Header>{proj.name}</Item.Header>
+                    <Item.Meta>{proj.organisation}</Item.Meta>
+                    <Item.Description>
+                      Contact: {proj.contact}
+                      <br />
+                      Lead assessor: {proj.leadAssessor}
+                    </Item.Description>
+                  </Item.Content>
+                </Item>
+              );
+            })}
+          </Item.Group>
+        </Segment>
       </Container>
     );
   }
@@ -82,6 +92,7 @@ const ProjectListQuery = gql`
       organisation
       contact
       leadAssessor
+      nextAssessment
       createdAt
       assessments(orderBy: when_DESC) {
         id

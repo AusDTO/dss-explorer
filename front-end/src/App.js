@@ -12,13 +12,17 @@ import { Segment } from "semantic-ui-react";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+const appStyle = {
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: "linear-gradient(90deg, #dee1e1 10%, #f4f4f4 90%)"
+};
 class App extends Component {
   render() {
     return (
-      <Segment className="App">
+      <div style={appStyle}>
         <PageHeader />
         <Router>
-          <div style={{ backgroundColor: "whitesmoke" }}>
+          <div>
             <Route exact path="/" component={Home} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/projects" component={Projects} />
@@ -28,7 +32,7 @@ class App extends Component {
           </div>
         </Router>
         <PageFooter />
-      </Segment>
+      </div>
     );
   }
 }

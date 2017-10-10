@@ -3,9 +3,19 @@ import { Message, Icon, Header } from "semantic-ui-react";
 
 export const TopHeading = props => {
   return (
-    <Header style={{ fontSize: "2em", paddingTop: "0.5em", color: "#273cb3" }}>
-      {props.children}
-    </Header>
+    <Header
+      {...props}
+      style={{ fontSize: "2em", paddingTop: "0.5em", color: "#273cb3" }}
+    />
+  );
+};
+
+export const TopInnerHeading = props => {
+  return (
+    <Header
+      {...props}
+      style={{ fontSize: "2em", lineHeight: "1em", color: "#273cb3" }}
+    />
   );
 };
 

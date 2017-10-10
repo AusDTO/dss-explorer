@@ -5,7 +5,7 @@ import Logo from "./Logo.js";
 class PageHeader extends React.Component {
   render() {
     return (
-      <div>
+      <div style={{ margin: "0.5em" }}>
         <Menu inverted>
           <Container>
             <Menu.Item as="a" header href="/">
