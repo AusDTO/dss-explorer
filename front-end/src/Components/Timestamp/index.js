@@ -1,12 +1,17 @@
 import moment from "moment";
 
-const Timestamp = ({ when = "", style = "date", defaultValue = "" }) => {
+const Timestamp = ({ when = "", type = "date", defaultValue = "" }) => {
   if (!when) {
     return defaultValue;
   }
   const dt = moment(when);
   if (dt.isValid) {
-    if (style === "date") return dt.format("D MMM YYYY");
+    if (type === "date") {
+      return dt.format("D MMM YYYY");
+    }
+    if (type === "difference") {
+      return moment.duration(dt.diff(moment())).humanize(true);
+    }
   }
 
   // If all else fails, just return what they gave us

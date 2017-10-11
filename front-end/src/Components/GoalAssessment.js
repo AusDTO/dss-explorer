@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import { graphql, gql } from "react-apollo";
+import Timestamp from "./Timestamp";
+import { CalculateGoalTitle } from "./Goals";
 
 import {
   Container,
@@ -10,7 +12,8 @@ import {
   Button,
   TextArea,
   Input,
-  Segment
+  Segment,
+  Transition
 } from "semantic-ui-react";
 
 function FieldGroup({ id, label, help, ...props }) {
@@ -35,26 +38,36 @@ class GoalAssessment extends React.Component {
   }
 
   handleChange = e => {
+    console.log("handleChange", e.target);
     this.setState({ changed: true, [e.target.id]: e.target.value });
+  };
+
+  handleRatingChange = e => {
+    console.log("handleRatingChange", e.target);
+    this.setState({ changed: true, rating: e.target.value }, () => {
+      this.handleSave();
+    });
   };
 
   handleBlur = e => {
     console.log("blur", this.state.changed);
     if (this.state.changed) {
-      this.setState({ changed: false });
       this.handleSave();
     }
   };
 
   handleSave = () => {
+    const vars = {
+      assessmentId: this.props.assessmentId,
+      goalNumber: this.props.goal.number,
+      goalId: get(this.props.goalAssessment, "id", ""),
+      ...this.state
+    };
+    console.log("SAVING", vars);
+    this.setState({ changed: false });
     this.props
       .mutate({
-        variables: {
-          assessmentId: this.props.assessmentId,
-          goalNumber: this.props.goal.number,
-          goalId: get(this.props.goalAssessment, "id", ""),
-          ...this.state
-        }
+        variables: vars
       })
       .then(({ data }) => {
         console.log("got response from update", data);
@@ -67,26 +80,27 @@ class GoalAssessment extends React.Component {
       });
   };
   render() {
-    //const dt = moment(this.state.updatedAt);
-    const lastUpdate = "yes";
-    //dt.IsValid()
-    //   ? moment.duration(moment().diff(dt)).humanize(true)
-    //   : "never";
     return (
       <Container>
-        <Header as="h1">
-          {"#" + this.props.goal.number + ". " + this.props.goal.summary}
+        <Header as="h2" style={{ display: "inline-block" }}>
+          {CalculateGoalTitle(this.props.goal)}
         </Header>
-        <Segment secondary>{this.props.goal.description}</Segment>
-        <Form onSubmit={this.handleSave}>
-          <Form.Field id="rating">
+        <span style={{ marginLeft: "1em" }} />
+        <Button
+          compact
+          circular
+          onClick={() => this.setState({ visible: !this.state.visible })}
+          icon={!!this.state.visible ? "chevron down" : "chevron up"}
+        />
+        <Transition.Group animation="fade down" duration={500}>
+          {!!this.state.visible && (
+            <Segment secondary>{this.props.goal.description}</Segment>
+          )}
+        </Transition.Group>
+        <Form>
+          <Form.Field>
             <label>Rating</label>
-            <Button.Group
-              onClick={evt => {
-                this.setState({ changed: true, rating: evt.target.value });
-              }}
-              onBlur={this.handleBlur}
-            >
+            <Button.Group id="rating" onClick={this.handleRatingChange}>
               <Button
                 value="Green"
                 color={this.state.rating === "Green" ? "green" : null}
@@ -149,9 +163,14 @@ class GoalAssessment extends React.Component {
             placeholder="What evidence was presented for this goal?"
             onBlur={this.handleBlur}
           />
-          <p>
-            <strong>Last updated</strong> {lastUpdate}
-          </p>
+          <div>
+            <strong>Last updated: </strong>
+            <Timestamp
+              when={this.state.updatedAt}
+              type="difference"
+              defaultValue="never"
+            />
+          </div>
         </Form>
       </Container>
     );
@@ -195,9 +214,14 @@ const updateGoal = gql`
       }
     ) {
       id
+      rating
       updatedAt
     }
   }
 `;
 
-export default graphql(updateGoal)(GoalAssessment);
+export default graphql(updateGoal, {
+  options: {
+    refetchQueries: ["AssessmentPageQuery"]
+  }
+})(GoalAssessment);

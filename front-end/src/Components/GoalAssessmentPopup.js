@@ -1,32 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Item } from "semantic-ui-react";
-import { CalculateRatingText } from "./Goals";
+import { Item, Header } from "semantic-ui-react";
+import { CalculateRatingText, CalculateGoalTitle } from "./Goals";
 
 import GoalLight from "./GoalLight";
 
 class GoalAssessmentPopup extends React.Component {
+  optionalDataBlock = (title, description) => {
+    if (!description) return null;
+    return (
+      <div style={{ marginTop: "0.75em" }}>
+        <Header size="medium">{title}</Header>
+        {description}
+      </div>
+    );
+  };
   render() {
-    const goal = this.props.goal;
-    const model = this.props.goalAssessment;
+    const { goal, goalAssessment } = this.props;
+    const model = goalAssessment;
     if (!model) {
       return (
         <Item.Group>
           <Item>
             <Item.Content>
-              <Item.Header>
-                {"#" + goal.number + ". " + goal.summary}
-              </Item.Header>
+              <Item.Header>{CalculateGoalTitle(goal)}</Item.Header>
               <Item.Description>Not assessed</Item.Description>
             </Item.Content>
           </Item>
         </Item.Group>
       );
     }
-    const info = [
-      { label: "Good", content: model.positiveComments },
-      { label: "Not so good", content: model.areasForImprovement }
-    ];
     return (
       <Item.Group>
         <Item>
@@ -34,21 +37,8 @@ class GoalAssessmentPopup extends React.Component {
             <Item.Header>{"#" + goal.number + ". " + goal.summary}</Item.Header>
             <Item.Meta>{model.assessor}</Item.Meta>
             <Item.Description>
-              {info.map(x => {
-                if (x.content) {
-                  return (
-                    <div>
-                      <p>
-                        <strong>{x.label}</strong>
-                        <br />
-                        {x.content}
-                      </p>
-                    </div>
-                  );
-                } else {
-                  return null;
-                }
-              })}
+              {this.optionalDataBlock("Good", model.positiveComments)}
+              {this.optionalDataBlock("Not so good", model.areasForImprovement)}
             </Item.Description>
             <Item.Extra>
               <GoalLight text={CalculateRatingText(model)} ga={model} />

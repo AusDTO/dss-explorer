@@ -10,47 +10,15 @@ import {
   Tab,
   Input,
   Segment,
-  Breadcrumb
+  Popup,
+  Item
 } from "semantic-ui-react";
 import Timestamp from "./Timestamp";
 import GoalLight from "./GoalLight";
 import GoalAssessment from "./GoalAssessment";
-import Goals from "./Goals";
+import { Goals, CalculateGoalTitle } from "./Goals";
 import DateInput from "./DateInput";
-
-const fakeData = {
-  id: "cj8dvy6da1olc0195hy26ayqed",
-  when: "2017-10-05T03:11:13.052Z",
-  summary: "Good effort. Needs to try harder.",
-  project: {
-    id: "cj8dmhvkw1hai0195g2vkn4cs",
-    name: "Identity IDP",
-    __typename: "Project"
-  },
-  goalAssessments: [
-    {
-      areasForImprovement: "a lot!",
-      assessor: "tyu",
-      evidence: "",
-      goalNumber: 1,
-      id: "cj8fhvyii7l5v0100zy3qdxkn",
-      positiveComments: "mostly positive",
-      rating: "Red",
-      __typename: "GoalAssessment"
-    },
-    {
-      areasForImprovement: "",
-      assessor: "",
-      evidence: "",
-      goalNumber: 2,
-      id: "cj8fhwp4zaav30112dm82xp2o",
-      positiveComments: "something positive",
-      rating: "Green",
-      __typename: "GoalAssessment"
-    }
-  ],
-  __typename: "Assessment"
-};
+import Breadcrumbs from "./Breadcrumbs";
 
 class AssessmentPage extends React.Component {
   constructor(props) {
@@ -86,18 +54,19 @@ class AssessmentPage extends React.Component {
       });
   };
   render() {
+    console.log("AssessmentPage>>render");
     if (this.props.data.loading) {
       return <Loading />;
     }
-    if (this.props.data.error) {
-      return <Error data={this.props.data} />;
-    }
+    // if (this.props.data.error) {
+    //   return <Error data={this.props.data} />;
+    // }
     var model = get(this.props.data, "Assessment", fakeData);
     if (!model) {
       return <div>Unknown assessment</div>;
     }
     // Initialize state -- can't do this in the constructor since the data is still loading at that point
-    if (!this.state.when) {
+    if (model.updatedAt !== this.state.updatedAt) {
       const dt = moment(model.when);
       this.state = {
         ...model,
@@ -113,7 +82,24 @@ class AssessmentPage extends React.Component {
         menuItem: (
           <Menu.Item key={goal.number} fitted>
             <div className="something" style={{ margin: "0.5em" }}>
-              <GoalLight text={goal.number} ga={goalAssessment} size="big" />
+              <Popup
+                key={goal.number}
+                flowing
+                trigger={
+                  <GoalLight
+                    text={goal.number}
+                    ga={goalAssessment}
+                    size="big"
+                  />
+                }
+              >
+                <Item.Group>
+                  <Item
+                    header={CalculateGoalTitle(goal)}
+                    description={goal.description}
+                  />
+                </Item.Group>
+              </Popup>
             </div>
           </Menu.Item>
         ),
@@ -147,8 +133,7 @@ class AssessmentPage extends React.Component {
 
     return (
       <Container>
-        <Breadcrumb divider="/" sections={breadcrumbs} />
-
+        <Breadcrumbs crumbs={breadcrumbs} />
         <Segment>
           <TopInnerHeading>
             {"Assessment of " + model.project.name + " - "}
@@ -203,6 +188,7 @@ const AssessmentPageQuery = gql`
       when
       summary
       leadAssessor
+      updatedAt
       project {
         id
         name
@@ -215,6 +201,7 @@ const AssessmentPageQuery = gql`
         id
         positiveComments
         rating
+        updatedAt
       }
     }
   }
@@ -234,6 +221,7 @@ const UpdateAssessmentMutation = gql`
       summary: $summary
     ) {
       id
+      when
       updatedAt
     }
   }
@@ -250,3 +238,38 @@ export default compose(
     })
   })
 )(AssessmentPage);
+
+const fakeData = {
+  id: "cj8dvy6da1olc0195hy26ayqed",
+  when: "2017-10-05T03:11:13.052Z",
+  summary: "Good effort. Needs to try harder.",
+  updatedAt: "2017-10-05T03:11:13.052Z",
+  project: {
+    id: "cj8dmhvkw1hai0195g2vkn4cs",
+    name: "Identity IDP"
+  },
+  goalAssessments: [
+    {
+      areasForImprovement: "a lot!",
+      assessor: "tyu",
+      evidence: "",
+      goalNumber: 1,
+      id: "cj8fhvyii7l5v0100zy3qdxkn",
+      positiveComments: "mostly positive",
+      updatedAt: "2017-10-05T03:11:13.052Z",
+
+      rating: "Red"
+    },
+    {
+      areasForImprovement: "",
+      assessor: "",
+      evidence: "",
+      goalNumber: 2,
+      id: "cj8fhwp4zaav30112dm82xp2o",
+      positiveComments: "something positive",
+      updatedAt: "2017-10-05T03:11:13.052Z",
+
+      rating: "Green"
+    }
+  ]
+};

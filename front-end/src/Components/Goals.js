@@ -18,7 +18,11 @@ export const CalculateRatingText = goalAssessment => {
   return null;
 };
 
-const Goals = [
+export const CalculateGoalTitle = goal => {
+  return "#" + goal.number + ". " + goal.summary;
+};
+
+export const Goals = [
   {
     number: 1,
     summary: "Understand user needs",

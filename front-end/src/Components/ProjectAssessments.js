@@ -11,12 +11,12 @@ import {
   Table,
   Item,
   Segment,
-  Breadcrumb,
   Input
 } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
+import Breadcrumbs from "./Breadcrumbs";
 
 const fakeData = {
   id: "fakeId1",
@@ -54,8 +54,7 @@ const fakeData = {
           positiveComments: "something positive",
           rating: "Green"
         }
-      ],
-      __typename: "Assessment"
+      ]
     },
     {
       id: "cj8dvy6da1olc0195hy26ayqeB",
@@ -94,8 +93,7 @@ const fakeData = {
           positiveComments: "",
           rating: "Amber"
         }
-      ],
-      __typename: "Assessment"
+      ]
     }
   ]
 };
@@ -165,9 +163,9 @@ class ProjectAssessments extends React.Component {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    if (this.props.data.error) {
-      return <Error data={this.props.data} />;
-    }
+    // if (this.props.data.error) {
+    //   return <Error data={this.props.data} />;
+    // }
     var model = get(this.props.data, "Project", fakeData);
     if (!model) {
       return <div>Unknown project</div>;
@@ -191,7 +189,7 @@ class ProjectAssessments extends React.Component {
 
     return (
       <Container>
-        <Breadcrumb divider="/" sections={breadcrumbs} />
+        <Breadcrumbs crumbs={breadcrumbs} />
         <Segment>
           <TopInnerHeading>{"Project - " + model.name}</TopInnerHeading>
           <Input
@@ -221,7 +219,7 @@ class ProjectAssessments extends React.Component {
             onBlur={this.handleBlur}
           />
         </Segment>
-        <Table>
+        <Table size="small">
           <Table.Header fullWidth>
             <Table.Row>
               <Table.HeaderCell style={{ fontSize: "1.5rem" }}>
@@ -243,7 +241,7 @@ class ProjectAssessments extends React.Component {
               const href = "/assessment/" + assessment.id;
               return (
                 <Table.Row key={assessment.id}>
-                  <Table.Cell>
+                  <Table.Cell width={5}>
                     <Item.Group link>
                       <Item>
                         <Item.Content>
@@ -258,7 +256,7 @@ class ProjectAssessments extends React.Component {
                       </Item>
                     </Item.Group>
                   </Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell width={11}>
                     <GoalsLightBoard assessment={assessment} />
                   </Table.Cell>
                 </Table.Row>
@@ -284,6 +282,7 @@ const ProjectAssessmentsQuery = gql`
       leadAssessor
       nextAssessment
       createdAt
+      updatedAt
       assessments(orderBy: when_DESC) {
         id
         when

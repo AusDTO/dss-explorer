@@ -23,8 +23,8 @@ class Dashboard extends React.Component {
     }
     var model = this.props.data;
     if (this.props.data.error) {
-      //return <Error data={this.props.data} />;
-      model = fakeData;
+      return <Error data={this.props.data} />;
+      //model = fakeData;
     }
     const items = [
       { label: "Projects", value: model._allProjectsMeta.count },
