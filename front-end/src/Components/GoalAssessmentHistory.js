@@ -1,15 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  Card,
-  Item,
-  Segment,
-  Dropdown,
-  Icon,
-  Button,
-  Header
-} from "semantic-ui-react";
+import { Dropdown, Button } from "semantic-ui-react";
 import "./GoalAssessmentHistory.css";
 import GoalAssessmentDetailReadOnly from "./GoalAssessmentDetailReadOnly";
 import Timestamp from "./Timestamp";
