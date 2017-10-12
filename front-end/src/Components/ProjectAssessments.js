@@ -163,15 +163,15 @@ class ProjectAssessments extends React.Component {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    // if (this.props.data.error) {
-    //   return <Error data={this.props.data} />;
-    // }
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+    }
     var model = get(this.props.data, "Project", fakeData);
     if (!model) {
       return <div>Unknown project</div>;
     }
     // Initialize state -- can't do this in the constructor since the data is still loading at that point
-    if (!this.state.id) {
+    if (model.updatedAt !== this.state.updatedAt) {
       const dt = moment(model.nextAssessment);
       this.state = {
         ...model,
@@ -315,6 +315,9 @@ const UpdateProjectMutation = gql`
     ) {
       id
       updatedAt
+      contact
+      leadAssessor
+      nextAssessment
     }
   }
 `;

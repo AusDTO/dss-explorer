@@ -1,3 +1,26 @@
+.react-root {
+  /* font-family: "Open Sans", Verdana, "Bitstream Vera Sans", sans-serif; */
+  font-family: Roboto, Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #c2c5c5 10%, #d5d8d8 90%);
+  /* background: linear-gradient(
+    135deg,
+    rgba(176, 212, 205, 1) 0,
+    rgba(78, 96, 161, 1) 100%
+  ); */
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.body-content {
+  flex: 1 0 auto;
+}
+
+.breadcrumbs {
+  margin-top: -1em;
+}
+
 /* .App {
   text-align: center;
 }

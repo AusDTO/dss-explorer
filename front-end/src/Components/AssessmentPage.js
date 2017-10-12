@@ -54,13 +54,13 @@ class AssessmentPage extends React.Component {
       });
   };
   render() {
-    console.log(JSON.stringify(this.props.data.Assessment));
+    // console.log(JSON.stringify(this.props.data.Assessment));
     if (this.props.data.loading) {
       return <Loading />;
     }
-    // if (this.props.data.error) {
-    //   return <Error data={this.props.data} />;
-    // }
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+    }
     var model = get(this.props.data, "Assessment", fakeData);
     if (!model) {
       return <div>Unknown assessment</div>;
@@ -110,6 +110,7 @@ class AssessmentPage extends React.Component {
               assessmentId={model.id}
               goal={goal}
               goalAssessment={goalAssessment}
+              project={model.project}
             />
           )
         }

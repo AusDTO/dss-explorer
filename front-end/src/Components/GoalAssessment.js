@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { CalculateGoalTitle } from "./Goals";
 import GoalAssessmentDetail from "./GoalAssessmentDetail";
-import GoalAssessmentDetailReadOnly from "./GoalAssessmentDetailReadOnly";
+import GoalAssessmentHistory from "./GoalAssessmentHistory";
 
 import {
   Container,
@@ -16,7 +16,7 @@ import {
 class GoalAssessment extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { historyVisible: true };
   }
   render() {
     return (
@@ -28,8 +28,9 @@ class GoalAssessment extends React.Component {
           floated="right"
           compact
           circular
-          onClick={() => this.setState({ visible2: !this.state.visible2 })}
-          icon={!!this.state.visible2 ? "chevron right" : "chevron left"}
+          onClick={() =>
+            this.setState({ historyVisible: !this.state.historyVisible })}
+          icon={!!this.state.historyVisible ? "chevron right" : "chevron left"}
         />
         <span style={{ marginLeft: "1em" }} />
         <Button
@@ -46,12 +47,12 @@ class GoalAssessment extends React.Component {
 
         <Grid columns={16}>
           <Grid.Row>
-            <Grid.Column width={this.state.visible2 ? 8 : 16}>
+            <Grid.Column width={this.state.historyVisible ? 8 : 16}>
               <GoalAssessmentDetail {...this.props} />
             </Grid.Column>
-            {!!this.state.visible2 && (
+            {!!this.state.historyVisible && (
               <Grid.Column width={8}>
-                <GoalAssessmentDetailReadOnly {...this.props} />
+                <GoalAssessmentHistory {...this.props} />
               </Grid.Column>
             )}
           </Grid.Row>

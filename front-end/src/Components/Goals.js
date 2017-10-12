@@ -12,13 +12,16 @@ export const CalculateRatingColor = (
   return defaultColor;
 };
 
-export const CalculateRatingText = goalAssessmentOrRating => {
+export const CalculateRatingText = (
+  goalAssessmentOrRating,
+  defaultText = null
+) => {
   var rating = get(goalAssessmentOrRating, "rating", goalAssessmentOrRating);
   if (rating === "Red") return "Failing";
   if (rating === "Amber") return "In progress";
   if (rating === "Green") return "Pass";
   if (rating === "NA") return "Not assessed";
-  return null;
+  return defaultText;
 };
 
 export const CalculateGoalTitle = goal => {

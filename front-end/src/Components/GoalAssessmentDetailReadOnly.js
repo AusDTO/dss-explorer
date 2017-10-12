@@ -6,22 +6,6 @@ import { CalculateRatingText, CalculateRatingColor } from "./Goals";
 
 import { Form, Button, TextArea, Input, Label, Table } from "semantic-ui-react";
 
-// const StaticLabel = props => {
-//   return (
-//     <b>
-//       {...props}
-//     </b>
-//   );
-// };
-
-const StaticText = props => {
-  return <p {...props} />;
-};
-
-const StaticMultiText = props => {
-  return <p {...props} />;
-};
-
 class GoalAssessmentDetailReadOnly extends React.Component {
   render() {
     const model = this.props.goalAssessment || {};
@@ -31,8 +15,8 @@ class GoalAssessmentDetailReadOnly extends React.Component {
         content: (
           <Label
             size="large"
-            color={CalculateRatingColor(model.rating)}
-            content={CalculateRatingText(model.rating)}
+            color={CalculateRatingColor(model.rating, "grey")}
+            content={CalculateRatingText(model.rating, "Not assessed")}
           />
         )
       },
@@ -45,11 +29,11 @@ class GoalAssessmentDetailReadOnly extends React.Component {
     ];
 
     return (
-      <Table small striped>
+      <Table striped>
         <Table.Body>
-          {tableData.map(({ label, content }) => {
+          {tableData.map(({ label, content }, i) => {
             return (
-              <Table.Row>
+              <Table.Row key={"row" + i}>
                 <Table.Cell>
                   <strong>{label}</strong>
                 </Table.Cell>
