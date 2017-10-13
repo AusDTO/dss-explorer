@@ -16,16 +16,15 @@ const fakeData = {
   }
 };
 
-class Dashboard extends React.Component {
+class Overview extends React.Component {
   render() {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    var model = this.props.data;
     if (this.props.data.error) {
       return <Error data={this.props.data} />;
-      //model = fakeData;
     }
+    var model = this.props.data || fakeData;
     const items = [
       { label: "Projects", value: model._allProjectsMeta.count },
       { label: "Users", value: model._allUsersMeta.count },
@@ -33,19 +32,19 @@ class Dashboard extends React.Component {
     ];
     return (
       <Container>
-        <TopHeading>Dashboard</TopHeading>
-        <Statistic.Group centered items={items} color="green" />
+        <TopHeading>Overview</TopHeading>
+        <Statistic.Group items={items} color="green" />
       </Container>
     );
   }
 }
 
-Dashboard.propTypes = {
+Overview.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const DashboardQuery = gql`
-  query DashboardQuery {
+const OverviewQuery = gql`
+  query OverviewQuery {
     _allProjectsMeta {
       count
     }
@@ -58,6 +57,6 @@ const DashboardQuery = gql`
   }
 `;
 
-export default graphql(DashboardQuery, {
+export default graphql(OverviewQuery, {
   options: { fetchPolicy: "network-only" }
-})(Dashboard);
+})(Overview);
