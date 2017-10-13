@@ -1,5 +1,5 @@
 # project: cj8d0cdxq04f40144ryvk4vf4
-# version: 33
+# version: 39
 
 type Assessment implements Node {
   id: ID! @isUnique
@@ -9,10 +9,12 @@ type Assessment implements Node {
   createdAt: DateTime!
   goalAssessments: [GoalAssessment!]! @relation(name: "AssessmentGoals")
   leadAssessor: String
+  updatedAt: DateTime!
 }
 
 type Project implements Node {
   createdAt: DateTime!
+  updatedAt: DateTime!
   id: ID! @isUnique
   name: String! @isUnique
   leadAssessor: String
@@ -37,6 +39,10 @@ type User implements Node {
   id: ID! @isUnique
   createdAt: DateTime!
   updatedAt: DateTime!
+  auth0UserId: String @isUnique
+  avatarUrl: String
+  emailAddress: String!
+  name: String!
 }
 
 type GoalAssessment implements Node {
