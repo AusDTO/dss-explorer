@@ -17,6 +17,7 @@ import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
 import Breadcrumbs from "./Breadcrumbs";
+import "./ProjectAssessments.css";
 
 const fakeData = {
   id: "fakeId1",
@@ -188,10 +189,10 @@ class ProjectAssessments extends React.Component {
     ];
 
     return (
-      <Container>
+      <Container className="projectAssessments">
         <Breadcrumbs crumbs={breadcrumbs} />
         <Segment>
-          <TopInnerHeading>{"Project - " + model.name}</TopInnerHeading>
+          <TopInnerHeading>{model.name}</TopInnerHeading>
           <Input
             fluid
             id="contact"

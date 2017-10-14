@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { graphql, gql } from "react-apollo";
+import { graphql, gql, compose } from "react-apollo";
 import Timestamp from "./Timestamp";
 import { CalculateRatingText } from "./Goals";
 
@@ -38,6 +38,9 @@ class GoalAssessmentDetail extends React.Component {
 
   handleRatingChange = e => {
     console.log("handleRatingChange", e.target);
+    if (!this.state.assessor && this.props.data.user) {
+      this.setState({ assessor: this.props.data.user.name });
+    }
     this.setState({ changed: true, rating: e.target.value }, () => {
       this.handleSave();
     });
@@ -179,8 +182,20 @@ const updateGoal = gql`
   }
 `;
 
-export default graphql(updateGoal, {
-  options: {
-    refetchQueries: ["AssessmentPageQuery"]
+const userQuery = gql`
+  query userQuery {
+    user {
+      id
+      name
+    }
   }
-})(GoalAssessmentDetail);
+`;
+
+export default compose(
+  graphql(userQuery),
+  graphql(updateGoal, {
+    options: {
+      refetchQueries: ["AssessmentPageQuery"]
+    }
+  })
+)(GoalAssessmentDetail);

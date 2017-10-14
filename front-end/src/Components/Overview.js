@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql } from "react-apollo";
-import { Container, Statistic } from "semantic-ui-react";
-import { Loading, TopHeading, Error } from "./Basics.js";
+import { Container, Segment, Statistic, Header } from "semantic-ui-react";
+import { Loading, TopInnerHeading, Error } from "./Basics.js";
 
 const fakeData = {
   _allProjectsMeta: {
@@ -26,14 +26,53 @@ class Overview extends React.Component {
     }
     var model = this.props.data || fakeData;
     const items = [
-      { label: "Projects", value: model._allProjectsMeta.count },
-      { label: "Users", value: model._allUsersMeta.count },
-      { label: "Assessments", value: model._allAssessmentsMeta.count }
+      {
+        label: "Projects",
+        value: Math.trunc(model._allProjectsMeta.count / 2).toLocaleString()
+      },
+      {
+        label: "Users",
+        value: Math.trunc(model._allUsersMeta.count / 2).toLocaleString()
+      },
+      {
+        label: "Assessments",
+        value: Math.trunc(model._allAssessmentsMeta.count / 2).toLocaleString()
+      },
+      { label: "Sign Ins", value: 101 }
+    ];
+    const items2 = [
+      {
+        label: "Projects",
+        value: model._allProjectsMeta.count.toLocaleString()
+      },
+      { label: "Users", value: model._allUsersMeta.count.toLocaleString() },
+      {
+        label: "Assessments",
+        value: model._allAssessmentsMeta.count.toLocaleString()
+      },
+      { label: "Sign Ins", value: Math.trunc(1234).toLocaleString() }
     ];
     return (
       <Container>
-        <TopHeading>Overview</TopHeading>
-        <Statistic.Group items={items} color="green" />
+        <Segment>
+          <TopInnerHeading>Overview</TopInnerHeading>
+          <Segment>
+            <Header as="h2">Last 30 days</Header>
+            <Statistic.Group
+              widths={items.length}
+              items={items}
+              color="green"
+            />
+          </Segment>
+          <Segment>
+            <Header as="h2">All time</Header>
+            <Statistic.Group
+              widths={items.length}
+              items={items2}
+              color="green"
+            />
+          </Segment>
+        </Segment>
       </Container>
     );
   }

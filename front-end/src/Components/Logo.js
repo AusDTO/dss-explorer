@@ -5,7 +5,7 @@ import icon from "../assets/icon.png";
 class Logo extends React.Component {
   render() {
     return (
-      <div>
+      <div className="logo">
         <Image
           shape="circular"
           size="mini"

@@ -19,6 +19,7 @@ import GoalAssessment from "./GoalAssessment";
 import { Goals, CalculateGoalTitle } from "./Goals";
 import DateInput from "./DateInput";
 import Breadcrumbs from "./Breadcrumbs";
+import "./AssessmentPage.css";
 
 class AssessmentPage extends React.Component {
   constructor(props) {
@@ -133,7 +134,7 @@ class AssessmentPage extends React.Component {
     ];
 
     return (
-      <Container>
+      <Container className="assessmentPage">
         <Breadcrumbs crumbs={breadcrumbs} />
         <Segment>
           <TopInnerHeading>
