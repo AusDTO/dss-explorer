@@ -22,9 +22,6 @@ class PageHeader extends React.Component {
   };
 
   render() {
-    if (this.props.data.loading) {
-      return <div>Loading</div>;
-    }
     const { user } = this.props.data;
     return (
       <div className="page-header">
@@ -53,7 +50,7 @@ class PageHeader extends React.Component {
                     <Dropdown text={user.name || "Unnamed"}>
                       <Dropdown.Menu>
                         <Dropdown.Item
-                          icon="external"
+                          icon="power"
                           text="Logout"
                           onClick={this.logout}
                         />

@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { graphql, gql } from "react-apollo";
 
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
-import { Container, Item, Statistic, Segment } from "semantic-ui-react";
+import { Container, Item, Statistic, Segment, Button } from "semantic-ui-react";
+import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
+import "./Projects.css";
 
 const fakeData = {
   allProjects: [
@@ -44,9 +46,21 @@ class ProjectList extends React.Component {
     }
     const models = this.props.data.allProjects || fakeData;
     return (
-      <Container>
+      <Container className="projects">
         <Segment>
-          <TopInnerHeading>Projects</TopInnerHeading>
+          <TopInnerHeading>
+            Projects
+            <CreateOrEditProjectDialog
+              trigger={
+                <Button
+                  className="newButton"
+                  positive
+                  icon="star"
+                  content="New project"
+                />
+              }
+            />
+          </TopInnerHeading>
           <Item.Group divided>
             {models.map(proj => {
               return (

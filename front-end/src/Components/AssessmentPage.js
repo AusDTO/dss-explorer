@@ -55,7 +55,6 @@ class AssessmentPage extends React.Component {
       });
   };
   render() {
-    // console.log(JSON.stringify(this.props.data.Assessment));
     if (this.props.data.loading) {
       return <Loading />;
     }
@@ -149,7 +148,6 @@ class AssessmentPage extends React.Component {
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
-          <div style={{ paddingTop: "0.5em" }} />
           <Input
             fluid
             id="leadAssessor"
@@ -158,7 +156,6 @@ class AssessmentPage extends React.Component {
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
-          <div style={{ paddingTop: "0.5em" }} />
           <Input
             fluid
             id="summary"
@@ -241,6 +238,8 @@ const UpdateAssessmentMutation = gql`
       id
       when
       updatedAt
+      leadAssessor
+      summary
     }
   }
 `;

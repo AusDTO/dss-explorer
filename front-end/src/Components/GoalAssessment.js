@@ -16,7 +16,7 @@ import {
 class GoalAssessment extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { historyVisible: true };
+    this.state = { historyVisible: false };
   }
   render() {
     return (

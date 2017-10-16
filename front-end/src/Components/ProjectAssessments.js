@@ -201,7 +201,6 @@ class ProjectAssessments extends React.Component {
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
-          <div style={{ paddingTop: "0.5em" }} />
           <Input
             fluid
             id="leadAssessor"
@@ -210,7 +209,6 @@ class ProjectAssessments extends React.Component {
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
-          <div style={{ paddingTop: "0.5em" }} />
           <DateInput
             fluid
             id="nextAssessment"
@@ -228,7 +226,7 @@ class ProjectAssessments extends React.Component {
               </Table.HeaderCell>
               <Table.HeaderCell textAlign="right">
                 <Button
-                  primary
+                  positive
                   icon="star"
                   content="New Assessment"
                   onClick={() =>
