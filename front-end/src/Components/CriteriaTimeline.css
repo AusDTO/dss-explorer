@@ -1,0 +1,32 @@
+.ui.segment .criteriaTimeline {
+  background: linear-gradient(135deg, #f2e9da, #f1d4a8);
+}
+
+.criteriaTimeline .historyDot {
+  height: 2.5em;
+}
+
+.criteriaTimeline .ui.feed > .event > .label {
+  height: 2.5em;
+}
+
+.criteriaTimeline h4 {
+  margin-top: 0.5em;
+}
+
+/* Swap the date and summary formats */
+
+.criteriaTimeline .ui.feed > .event > .content .summary {
+  font-weight: 400;
+  font-size: 1em;
+  font-style: normal;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.criteriaTimeline .ui.feed > .event > .content .date {
+  font-size: 1em;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+  border-top: 1px rgba(0, 0, 0, 0.2) solid;
+  padding-top: 2px;
+}

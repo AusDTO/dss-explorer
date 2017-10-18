@@ -6,7 +6,7 @@ import {
   Button,
   Container,
   Modal,
-  Menu,
+  Form,
   Tab,
   Input,
   Segment,
@@ -15,10 +15,12 @@ import {
 } from "semantic-ui-react";
 import DateInput from "./DateInput";
 
-const LabelledField = ({ label, ...props }) => {
+const LabelledField = ({ id, text, ...props }) => {
   return (
     <div className="ui fluid labeled input">
-      <div className="ui label label">{label}</div>
+      <label htmlFor={id || text} className="ui label label">
+        {text}
+      </label>
       <div style={{ marginLeft: "1em" }} {...props} />
     </div>
   );
@@ -33,12 +35,18 @@ class CreateOrEditProjectDialog extends React.Component {
       contact: "",
       nextAssessment: "",
       organisation: "",
+      stage: "PreAlpha",
+      assessorType: "DTA",
       ...this.props.project
     };
   }
 
   handleChange = e => {
-    this.setState({ changed: true, [e.target.id]: e.target.value });
+    this.handleFieldChange(e.target.id, e);
+  };
+
+  handleFieldChange = (field, e) => {
+    this.setState({ changed: true, [field]: e.target.value });
   };
 
   handleCancel = e => {
@@ -52,11 +60,11 @@ class CreateOrEditProjectDialog extends React.Component {
   handleCreate = () => {
     const vars = {
       id: "",
+      nextAssessment: null,
       ...this.props.project,
-      ...this.state,
-      nextAssessment: null
+      ...this.state
     };
-    console.log("saving assessment", vars);
+    console.log("saving project", vars);
     this.props
       .upsertProject({
         variables: vars
@@ -70,10 +78,34 @@ class CreateOrEditProjectDialog extends React.Component {
       });
   };
 
+  makeStageButton = (text, stage, color) => {
+    return (
+      <Button
+        key={stage}
+        value={stage}
+        color={this.state.stage === stage ? color : null}
+        content={text}
+      />
+    );
+  };
+
+  makeAssessorButton = (text, stage, color) => {
+    return (
+      <Button
+        key={stage}
+        value={stage}
+        color={this.state.assessorType === stage ? color : null}
+        content={text}
+      />
+    );
+  };
+
   render() {
     const header = !!this.props.project ? "Edit project" : "Create project";
+    const emptyName = !this.state.name;
     return (
       <Modal
+        dimmer="blurring"
         open={this.state.open}
         onOpen={this.open}
         onClose={this.close}
@@ -84,10 +116,12 @@ class CreateOrEditProjectDialog extends React.Component {
           <Container className="projectDialog">
             <Input
               fluid
+              autoFocus
               label="Name"
               id="name"
               value={this.state.name}
               onChange={this.handleChange}
+              error={emptyName}
             />
             <Input
               fluid
@@ -110,29 +144,40 @@ class CreateOrEditProjectDialog extends React.Component {
               value={this.state.leadAssessor}
               onChange={this.handleChange}
             />
-            <LabelledField label="Stage">
-              <Button.Group toggle>
-                <Button content="Pre-alpha" />
+            <LabelledField text="Stage">
+              <Button.Group
+                id="stage"
+                onClick={e => this.handleFieldChange("stage", e)}
+              >
+                {this.makeStageButton("Pre-alpha", "PreAlpha", "olive")}
                 <Button.Or />
-                <Button content="Alpha" />
+                {this.makeStageButton("Alpha", "Alpha", "green")}
                 <Button.Or />
-                <Button content="Beta" />
+                {this.makeStageButton("Beta", "Beta", "teal")}
                 <Button.Or />
-                <Button content="Live" />
+                {this.makeStageButton("Live", "Live", "blue")}
               </Button.Group>
             </LabelledField>
-            <LabelledField label="Assessment type">
-              <Button.Group toggle>
-                <Button content="DTA-led" />
+            <LabelledField text="Assessor type">
+              <Button.Group
+                id="assessorType"
+                onClick={e => this.handleFieldChange("assessorType", e)}
+              >
+                {this.makeAssessorButton("DTA-led", "DTA", "teal")}
                 <Button.Or />
-                <Button content="Self assessed" />
+                {this.makeAssessorButton("Self assessed", "Self", "blue")}
               </Button.Group>
             </LabelledField>
           </Container>
         </Modal.Content>
         <Modal.Actions>
           <Button content="Close" onClick={this.handleCancel} />
-          <Button positive content="Create" onClick={this.handleCreate} />
+          <Button
+            disabled={emptyName}
+            positive
+            content="Create"
+            onClick={this.handleCreate}
+          />
         </Modal.Actions>
       </Modal>
     );
@@ -151,6 +196,8 @@ const upsertProject = gql`
     $contact: String
     $nextAssessment: DateTime
     $organisation: String
+    $stage: String
+    $assessorType: String
   ) {
     updateOrCreateProject(
       update: {
@@ -160,6 +207,8 @@ const upsertProject = gql`
         contact: $contact
         nextAssessment: $nextAssessment
         organisation: $organisation
+        stage: $stage
+        assessorType: $assessorType
       }
       create: {
         name: $name
@@ -167,6 +216,8 @@ const upsertProject = gql`
         contact: $contact
         nextAssessment: $nextAssessment
         organisation: $organisation
+        stage: $stage
+        assessorType: $assessorType
       }
     ) {
       id

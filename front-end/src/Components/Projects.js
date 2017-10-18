@@ -7,43 +7,44 @@ import { Container, Item, Statistic, Segment, Button } from "semantic-ui-react";
 import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
 import "./Projects.css";
 
-const fakeData = {
-  allProjects: [
-    {
-      id: "a",
-      name: "Identity - IDP",
-      organisation: "Digital Transformation Agency",
-      contact: "Meera Pankhurst",
-      leadAssessor: "Leisa",
-      createdAt: "2017-01-19"
-    },
-    {
-      id: "a",
-      name: "Marketplace",
-      organisation: "Digital Transformation Agency",
-      contact: "Michael Yettle",
-      leadAssessor: "Leisa Agora",
-      createdAt: "2017-01-19"
-    },
-    {
-      id: "b",
-      name: "WHIPIT",
-      organisation: "Dept of Human Services",
-      contact: "Egbert Tran",
-      leadAssessor: "Meera Pankhurst",
-      createdAt: "2017-01-19"
-    }
-  ]
-};
+const fakeData = [
+  {
+    id: "a",
+    name: "Identity - IDP",
+    organisation: "Digital Transformation Agency",
+    contact: "Meera Pankhurst",
+    leadAssessor: "Leisa",
+    createdAt: "2017-01-19",
+    assessments: []
+  },
+  {
+    id: "a",
+    name: "Marketplace",
+    organisation: "Digital Transformation Agency",
+    contact: "Michael Yettle",
+    leadAssessor: "Leisa Agora",
+    createdAt: "2017-01-19",
+    assessments: []
+  },
+  {
+    id: "b",
+    name: "WHIPIT",
+    organisation: "Dept of Human Services",
+    contact: "Egbert Tran",
+    leadAssessor: "Meera Pankhurst",
+    createdAt: "2017-01-19",
+    assessments: []
+  }
+];
 
 class ProjectList extends React.Component {
   render() {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    if (this.props.data.error) {
-      return <Error data={this.props.data} />;
-    }
+    // if (this.props.data.error) {
+    //   return <Error data={this.props.data} />;
+    // }
     const models = this.props.data.allProjects || fakeData;
     return (
       <Container className="projects">

@@ -2,23 +2,39 @@ import React from "react";
 import PropTypes from "prop-types";
 import { CalculateGoalTitle } from "./Goals";
 import GoalAssessmentDetail from "./GoalAssessmentDetail";
-import GoalAssessmentHistory from "./GoalAssessmentHistory";
+import CriteriaTimeline from "./CriteriaTimeline";
+import GoalAssessmentAdvice from "./GoalAssessmentAdvice";
+import GoalAssessmentRationale from "./GoalAssessmentRationale";
+import "./GoalAssessment.css";
 
-import {
-  Container,
-  Header,
-  Button,
-  Segment,
-  Transition,
-  Grid
-} from "semantic-ui-react";
+import { Container, Header, Button, Grid, Tab } from "semantic-ui-react";
 
 class GoalAssessment extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { historyVisible: false };
+    this.state = { historyVisible: true };
   }
   render() {
+    const panels = [
+      {
+        menuItem: "History",
+        pane: {
+          content: <CriteriaTimeline {...this.props} />
+        }
+      },
+      {
+        menuItem: "Advice",
+        pane: {
+          content: <GoalAssessmentAdvice goal={this.props.goal} />
+        }
+      },
+      {
+        menuItem: "Why this?",
+        pane: {
+          content: <GoalAssessmentRationale goal={this.props.goal} />
+        }
+      }
+    ];
     return (
       <Container>
         <div>
@@ -35,18 +51,6 @@ class GoalAssessment extends React.Component {
               !!this.state.historyVisible ? "chevron right" : "chevron left"
             }
           />
-          <span style={{ marginLeft: "1em" }} />
-          <Button
-            compact
-            circular
-            onClick={() => this.setState({ visible: !this.state.visible })}
-            icon={!!this.state.visible ? "chevron down" : "chevron up"}
-          />
-          <Transition.Group animation="fade down" duration={500}>
-            {!!this.state.visible && (
-              <Segment secondary>{this.props.goal.description}</Segment>
-            )}
-          </Transition.Group>
         </div>
 
         <Grid columns={16} style={{ clear: "both" }}>
@@ -56,7 +60,8 @@ class GoalAssessment extends React.Component {
             </Grid.Column>
             {!!this.state.historyVisible && (
               <Grid.Column width={8}>
-                <GoalAssessmentHistory {...this.props} />
+                <Tab renderActiveOnly={false} panes={panels} />
+                {/* <GoalAssessmentHistory {...this.props} /> */}
               </Grid.Column>
             )}
           </Grid.Row>

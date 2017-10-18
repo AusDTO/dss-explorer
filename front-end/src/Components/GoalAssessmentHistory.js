@@ -79,7 +79,6 @@ class GoalAssessmentHistory extends React.Component {
     );
     return (
       <div className="historian">
-        <div className="title">History</div>
         <div className="navigation">
           <Button
             icon="chevron circle left"
