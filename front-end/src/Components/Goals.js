@@ -30,7 +30,7 @@ export const CalculateGoalTitle = goal => {
 
 export const Goals = [
   {
-    number: "1",
+    number: 1,
     summary: "Understand user needs",
     description: `Understand user needs. Research to develop a deep knowledge of the users and their context for using the service.`,
     reason: `<p>You need to understand the people who use your service (your users) and what they want to do (their user needs) in order to build a service that works for them. You need to understand users and their needs from their point of view and not solely through the lens of the project you have been tasked with.</p>
@@ -70,7 +70,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "2",
+    number: 2,
     summary: "Have a multidisciplinary team",
     description: `Establish a sustainable multidisciplinary team to design, build, operate and iterate the service, led by an experienced product manager with decision-making responsibility.`,
     reason: `<p>Good government services are built quickly and iteratively, based on user needs. Your <a target="_blank" href="https://www.dta.gov.au/standard/design-guides/the-team/">digital delivery team</a> must be set up in the right way to do this. They need:</p>
@@ -110,7 +110,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "3",
+    number: 3,
     summary: "Agile and user-centred process",
     description: `Design and build the service using the service design and delivery process, taking an agile and user-centred approach.`,
     reason: `<p>Designing services in a user-centred way means that the services you deliver will be easy to use and convenient for the people who need to use them, helping them to stay in the digital channel.</p>
@@ -143,7 +143,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "4",
+    number: 4,
     summary: "Understand tools and systems",
     description: `Understand the tools and systems required to build, host, operate and measure the service and how to adopt, adapt or procure them.`,
     reason: `<p>The technology you choose to build your service must help you respond quickly and regularly to the needs and expectations of users. This criterion ensures you:</p>
@@ -192,7 +192,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "5",
+    number: 5,
     summary: "Make it secure",
     description: `Identify the data and information the service will use or create. Put appropriate legal, privacy and security measures in place.`,
     reason: `<p>People who use government services must have confidence that:</p>
@@ -280,7 +280,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "6",
+    number: 6,
     summary: "Consistent and responsive design",
     description: `Build the service with responsive design methods using common design patterns and the style guide for digital content`,
     reason: `<p>Using responsive design, following common design patterns and style guidance for digital content, and <a target="_blank" href="https://www.dta.gov.au/standard/design-guides/inclusive-services/">making sure the service is accessible</a> means it will be simpler, clearer and faster for all users. It will also be available on the <a target="_blank" href="https://www.dta.gov.au/blog/what-do-we-mean-by-digital/">platforms and devices that users choose</a>.</p>
@@ -303,7 +303,7 @@ export const Goals = [
   <p>As you develop through Beta and progress to Live, you should be applying these principles and design methods and will be expected to show them in your service.</p>`
   },
   {
-    number: "7",
+    number: 7,
     summary: "Use open standards and common platforms",
     description: `Build using open standards and common government platforms where appropriate.`,
     reason: `<p>Using <a href="https://en.wikipedia.org/wiki/Open_standard">open standards</a> and common government platforms helps you to:</p>
@@ -333,7 +333,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "8",
+    number: 8,
     summary: "Make source code open",
     description: `Make all new source code open by default.`,
     reason: `<p>It’s important to share your source code so others with a similar need can reuse it.</p>
@@ -363,7 +363,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "9",
+    number: 9,
     summary: "Make it accessible",
     description: `Ensure the service is accessible to all users regardless of their ability and environment.`,
     reason: `<p>You need to make sure everyone who needs your service can use it. This includes people with disabilities and older people, and people who can’t use, or struggle with, digital services.</p>
@@ -425,7 +425,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "10",
+    number: 10,
     summary: "Test the service",
     description: `Test the service from end to end, in an environment that replicates the live version.`,
     reason: `<p>All government services should be clear, simple and easy to use, regardless of the technology your users use, their expertise with the subject matter, or their level of digital skill.</p>
@@ -448,7 +448,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "11",
+    number: 11,
     summary: "Measure performance",
     description: `Measure performance against KPIs set out in the guides. Report on public dashboard.`,
     reason: `<p>Every service must aim for continuous improvement. Metrics are an important starting point for discussions about a service’s strengths and weaknesses. By <a target="_blank" href="https://www.dta.gov.au/standard/measuring-performance/">identifying and capturing the right metrics</a> - with the right tools - you can make sure all your decisions to improve the service are supported by data.</p>
@@ -518,7 +518,7 @@ export const Goals = [
   </ul>`
   },
   {
-    number: "12",
+    number: 12,
     summary: "Don’t forget the non-digital experience",
     description: `Ensure that people who use the digital service can also use the other available channels if needed, without repetition or confusion.`,
     reason: `<p>People often start using a service and have to come back to it later, or switch to a non-digital channel to complete the transaction. We need to make sure users’ transitions between non-digital and digital channels, when they need to happen, are as smooth as possible.</p>`,
@@ -550,7 +550,7 @@ export const Goals = [
   <!-- Umm...? -->`
   },
   {
-    number: "13",
+    number: 13,
     summary: "Encourage everyone to use the digital service",
     description: `Encourage users to choose the digital service and consolidate or phase out existing alternative channels where appropriate.`,
     reason: `<p>As we build simpler, clearer and faster government services the digital channel will become more convenient for users than non-digital channels like post, phone and shopfronts. Increased digital take-up will mean users can spend less time interacting with government. This will result in greater cost efficiencies for government.</p>
