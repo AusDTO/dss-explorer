@@ -19,18 +19,21 @@ class GoalAssessment extends React.Component {
       {
         menuItem: "History",
         pane: {
+          key: 1,
           content: <CriteriaTimeline {...this.props} />
         }
       },
       {
         menuItem: "Advice",
         pane: {
+          key: 2,
           content: <GoalAssessmentAdvice goal={this.props.goal} />
         }
       },
       {
         menuItem: "Why this?",
         pane: {
+          key: 3,
           content: <GoalAssessmentRationale goal={this.props.goal} />
         }
       }

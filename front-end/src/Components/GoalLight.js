@@ -7,7 +7,7 @@ export default class GoalLight extends React.Component {
   render() {
     return (
       <Label
-        color={CalculateRatingColor(this.props.ga, "grey")}
+        color={CalculateRatingColor(this.props.ga, null)}
         content={this.props.text}
         {...this.props}
       />

@@ -8,6 +8,7 @@
 
 .criteriaTimeline .ui.feed > .event > .label {
   height: 2.5em;
+  border: 1px rgba(0, 0, 0, 0.4) solid !important;
 }
 
 .criteriaTimeline h4 {

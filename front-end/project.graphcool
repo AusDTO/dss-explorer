@@ -1,7 +1,7 @@
 # project: cj8d0cdxq04f40144ryvk4vf4
-# version: 39
+# version: 51
 
-type Assessment implements Node {
+type Assessment @model {
   id: ID! @isUnique
   project: Project @relation(name: "ProjectOnAssessment")
   summary: String
@@ -10,9 +10,10 @@ type Assessment implements Node {
   goalAssessments: [GoalAssessment!]! @relation(name: "AssessmentGoals")
   leadAssessor: String
   updatedAt: DateTime!
+  stage: Stage
 }
 
-type Project implements Node {
+type Project @model {
   createdAt: DateTime!
   updatedAt: DateTime!
   id: ID! @isUnique
@@ -22,9 +23,11 @@ type Project implements Node {
   contact: String
   nextAssessment: DateTime
   organisation: String
+  assessorType: AssessorType
+  stage: Stage
 }
 
-type File implements Node {
+type File @model {
   contentType: String!
   createdAt: DateTime!
   id: ID! @isUnique
@@ -35,7 +38,7 @@ type File implements Node {
   url: String! @isUnique
 }
 
-type User implements Node {
+type User @model {
   id: ID! @isUnique
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -45,14 +48,14 @@ type User implements Node {
   name: String!
 }
 
-type GoalAssessment implements Node {
+type GoalAssessment @model {
   areasForImprovement: String
   assessor: String
   evidence: String
   goalNumber: Int!
   id: ID! @isUnique
   positiveComments: String
-  rating: Rating! @defaultValue(value: NA)
+  rating: Rating @defaultValue(value: Unknown)
   assessment: Assessment @relation(name: "AssessmentGoals")
   updatedAt: DateTime!
 }
@@ -62,4 +65,21 @@ enum Rating {
   Amber
   Red
   NA
+  Exempt
+  NotAssessed
+  Unknown
+}
+
+enum AssessorType {
+  DTA
+  Self
+  Other
+}
+
+enum Stage {
+  Alpha
+  Beta
+  Live
+  Unknown
+  Discovery
 }

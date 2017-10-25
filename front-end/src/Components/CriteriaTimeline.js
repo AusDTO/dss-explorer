@@ -17,9 +17,10 @@ class CriteriaTimeline extends React.Component {
         ...ga
       };
     });
-    const history = gaForCriteria.filter(
-      x => !!x && (!assessment || moment(x.when) < moment(assessment.when))
-    );
+    const history = gaForCriteria
+      .filter(x => !!x)
+      .filter(x => !assessment || moment(x.when) < moment(assessment.when))
+      .filter(x => !!x.rating && x.rating !== "Unknown" && x.rating !== "NA");
     const events = history.map(ga => {
       const body = (
         <div>
@@ -48,7 +49,11 @@ class CriteriaTimeline extends React.Component {
     return (
       <Segment className="criteriaTimeline">
         <Header>History</Header>
-        <Feed events={events} />
+        {events.length ? (
+          <Feed events={events} />
+        ) : (
+          <p>No previous assessments</p>
+        )}
       </Segment>
     );
   }

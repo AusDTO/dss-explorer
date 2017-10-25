@@ -1,19 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql, compose } from "react-apollo";
-import { Loading, Error } from "./Basics.js";
-import {
-  Button,
-  Container,
-  Modal,
-  Form,
-  Tab,
-  Input,
-  Segment,
-  Popup,
-  Item
-} from "semantic-ui-react";
-import DateInput from "./DateInput";
+import { Button, Container, Modal, Input } from "semantic-ui-react";
 
 const LabelledField = ({ id, text, ...props }) => {
   return (
@@ -149,7 +137,7 @@ class CreateOrEditProjectDialog extends React.Component {
                 id="stage"
                 onClick={e => this.handleFieldChange("stage", e)}
               >
-                {this.makeStageButton("Pre-alpha", "PreAlpha", "olive")}
+                {this.makeStageButton("Discovery", "Discovery", "olive")}
                 <Button.Or />
                 {this.makeStageButton("Alpha", "Alpha", "green")}
                 <Button.Or />

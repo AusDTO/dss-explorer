@@ -1,10 +1,23 @@
-import React from 'react';
-import { PageHeader } from 'react-bootstrap';
+import React from "react";
+import { Container, Segment } from "semantic-ui-react";
+import { Loading, TopInnerHeading, Error } from "./Basics.js";
 
-const Admin = props => (
-    <PageHeader>
-      Admin
-    </PageHeader>
-  );
+class Admin extends React.Component {
+  render() {
+    if (this.props.data.loading) {
+      return <Loading />;
+    }
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+    }
+    return (
+      <Container className="projects">
+        <Segment>
+          <TopInnerHeading>Projects</TopInnerHeading>
+        </Segment>
+      </Container>
+    );
+  }
+}
 
-export default Admin ;
+export default Admin;

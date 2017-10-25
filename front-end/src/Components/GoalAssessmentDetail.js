@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { get } from "lodash";
 import { graphql, gql, compose } from "react-apollo";
 import Timestamp from "./Timestamp";
-import { CalculateRatingText } from "./Goals";
+import { CalculateRatingText, CalculateRatingColor } from "./Goals";
 
 import { Form, Button, TextArea, Input } from "semantic-ui-react";
 
@@ -25,7 +25,9 @@ class GoalAssessmentDetail extends React.Component {
     return (
       <Button
         value={rating}
-        color={this.state.rating === rating ? color : null}
+        color={
+          this.state.rating === rating ? CalculateRatingColor(rating) : null
+        }
         content={CalculateRatingText(rating)}
       />
     );
@@ -83,10 +85,11 @@ class GoalAssessmentDetail extends React.Component {
           <Form.Field>
             <label>Rating</label>
             <Button.Group id="rating" onClick={this.handleRatingChange}>
-              {this.makeRatingButton("Green", "green")}
-              {this.makeRatingButton("Amber", "orange")}
-              {this.makeRatingButton("Red", "red")}
-              {this.makeRatingButton("NA", "grey")}
+              {this.makeRatingButton("Green")}
+              {this.makeRatingButton("Amber")}
+              {this.makeRatingButton("Red")}
+              {this.makeRatingButton("NotAssessed")}
+              {this.makeRatingButton("Exempt")}
             </Button.Group>
           </Form.Field>
 

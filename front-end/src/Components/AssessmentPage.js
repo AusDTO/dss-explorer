@@ -144,7 +144,7 @@ class AssessmentPage extends React.Component {
             fluid
             label="When"
             id="when"
-            value={this.state.when}
+            value={this.state.when || ""}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
@@ -152,7 +152,7 @@ class AssessmentPage extends React.Component {
             fluid
             id="leadAssessor"
             label="Lead Assessor"
-            value={this.state.leadAssessor}
+            value={this.state.leadAssessor || ""}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
@@ -160,7 +160,7 @@ class AssessmentPage extends React.Component {
             fluid
             id="summary"
             label="Summary"
-            value={this.state.summary}
+            value={this.state.summary || ""}
             type="textarea"
             onChange={this.handleChange}
             onBlur={this.handleBlur}

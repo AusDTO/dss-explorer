@@ -26,6 +26,7 @@ const fakeData = {
   leadAssessor: "Leisa Reichart",
   nextAssessment: "2017-12-01",
   createdAt: "2016-03-27",
+  updatedAt: "2016-03-27",
   assessments: [
     {
       id: "cj8dvy6da1olc0195hy26ayqeA",
@@ -102,11 +103,15 @@ const fakeData = {
 class ProjectAssessments extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { view: "timeline" };
   }
 
   handleChange = e => {
     this.setState({ changed: true, [e.target.id]: e.target.value });
+  };
+
+  handleSettingChange = (field, value) => {
+    this.setState({ [field]: value });
   };
 
   handleBlur = e => {
@@ -175,6 +180,7 @@ class ProjectAssessments extends React.Component {
     if (model.updatedAt !== this.state.updatedAt) {
       const dt = moment(model.nextAssessment);
       this.state = {
+        ...this.state,
         ...model,
         contact: model.contact || "",
         leadAssessor: model.leadAssessor || "",
@@ -222,8 +228,23 @@ class ProjectAssessments extends React.Component {
           <Table.Header fullWidth>
             <Table.Row>
               <Table.HeaderCell style={{ fontSize: "1.5rem" }}>
-                Assessments
+                Assessments &nbsp;&nbsp;
+                <Button.Group toggle>
+                  <Button
+                    toggle
+                    icon="calendar"
+                    primary={this.state.view === "timeline"}
+                    onClick={() => this.handleSettingChange("view", "timeline")}
+                  />
+                  <Button
+                    toggle
+                    icon="comment"
+                    primary={this.state.view === "goal"}
+                    onClick={() => this.handleSettingChange("view", "goal")}
+                  />
+                </Button.Group>
               </Table.HeaderCell>
+
               <Table.HeaderCell textAlign="right">
                 <Button
                   positive

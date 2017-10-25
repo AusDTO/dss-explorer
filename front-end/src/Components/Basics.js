@@ -1,5 +1,5 @@
 import React from "react";
-import { Message, Icon, Header } from "semantic-ui-react";
+import { Container, Message, Icon, Header } from "semantic-ui-react";
 
 export const TopHeading = props => {
   return (
@@ -37,13 +37,15 @@ export class Error extends React.Component {
   render() {
     console.log(this.props.data);
     return (
-      <Message icon>
-        <Icon name="warning" />
-        <Message.Content>
-          <Message.Header>Oops. Something bad happened</Message.Header>
-          {this.props.data.error.message}
-        </Message.Content>
-      </Message>
+      <Container className="error">
+        <Message icon error>
+          <Icon name="warning" />
+          <Message.Content>
+            <Message.Header>Oops. Something bad happened</Message.Header>
+            {this.props.data.error.message}
+          </Message.Content>
+        </Message>
+      </Container>
     );
   }
 }

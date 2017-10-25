@@ -42,9 +42,9 @@ class ProjectList extends React.Component {
     if (this.props.data.loading) {
       return <Loading />;
     }
-    // if (this.props.data.error) {
-    //   return <Error data={this.props.data} />;
-    // }
+    if (this.props.data.error) {
+      return <Error data={this.props.data} />;
+    }
     const models = this.props.data.allProjects || fakeData;
     return (
       <Container className="projects">

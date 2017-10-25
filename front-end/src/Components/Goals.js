@@ -8,7 +8,8 @@ export const CalculateRatingColor = (
   if (rating === "Red") return "red";
   if (rating === "Amber") return "orange";
   if (rating === "Green") return "green";
-  if (rating === "NA") return "grey";
+  if (rating === "NotAssessed") return "grey";
+  if (rating === "Exempt") return "blue";
   return defaultColor;
 };
 
@@ -20,7 +21,8 @@ export const CalculateRatingText = (
   if (rating === "Red") return "Failing";
   if (rating === "Amber") return "In progress";
   if (rating === "Green") return "Pass";
-  if (rating === "NA") return "Not assessed";
+  if (rating === "NotAssessed") return "Not assessed";
+  if (rating === "Exempt") return "Exempt";
   return defaultText;
 };
 
