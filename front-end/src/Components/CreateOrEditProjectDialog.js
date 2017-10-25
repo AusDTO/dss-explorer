@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { graphql, gql, compose } from "react-apollo";
 import { Button, Container, Modal, Input } from "semantic-ui-react";
+import { CalculateStageColor, CalculateStageText } from "./Stage";
 
 const LabelledField = ({ id, text, ...props }) => {
   return (
@@ -21,9 +22,9 @@ class CreateOrEditProjectDialog extends React.Component {
       name: "",
       leadAssessor: "",
       contact: "",
-      nextAssessment: "",
+      nextAssessment: null,
       organisation: "",
-      stage: "PreAlpha",
+      stage: "Discovery",
       assessorType: "DTA",
       ...this.props.project
     };
@@ -66,13 +67,13 @@ class CreateOrEditProjectDialog extends React.Component {
       });
   };
 
-  makeStageButton = (text, stage, color) => {
+  makeStageButton = stage => {
     return (
       <Button
         key={stage}
         value={stage}
-        color={this.state.stage === stage ? color : null}
-        content={text}
+        color={this.state.stage === stage ? CalculateStageColor(stage) : null}
+        content={CalculateStageText(stage)}
       />
     );
   };
@@ -137,13 +138,13 @@ class CreateOrEditProjectDialog extends React.Component {
                 id="stage"
                 onClick={e => this.handleFieldChange("stage", e)}
               >
-                {this.makeStageButton("Discovery", "Discovery", "olive")}
+                {this.makeStageButton("Discovery")}
                 <Button.Or />
-                {this.makeStageButton("Alpha", "Alpha", "green")}
+                {this.makeStageButton("Alpha")}
                 <Button.Or />
-                {this.makeStageButton("Beta", "Beta", "teal")}
+                {this.makeStageButton("Beta")}
                 <Button.Or />
-                {this.makeStageButton("Live", "Live", "blue")}
+                {this.makeStageButton("Live")}
               </Button.Group>
             </LabelledField>
             <LabelledField text="Assessor type">
@@ -184,8 +185,8 @@ const upsertProject = gql`
     $contact: String
     $nextAssessment: DateTime
     $organisation: String
-    $stage: String
-    $assessorType: String
+    $stage: Stage
+    $assessorType: AssessorType
   ) {
     updateOrCreateProject(
       update: {
