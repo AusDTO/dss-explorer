@@ -6,16 +6,16 @@
     "apollo-client": "^1.9.3",
     "auth0-lock": "^10.23.1",
     "graphql-tag": "^2.4.2",
+    "history": "^4.7.2",
     "lodash": "^4.17.4",
     "moment": "2.18.1",
     "react": "^16.0.0",
     "react-apollo": "^1.4.16",
     "react-dom": "^16.0.0",
-    "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
     "semantic-ui-css": "^2.2.12",
-    "semantic-ui-react": "^0.74.2"
+    "semantic-ui-react": "^0.75.1"
   },
   "scripts": {
     "start": "react-scripts start",

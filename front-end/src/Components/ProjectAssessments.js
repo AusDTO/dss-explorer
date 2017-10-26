@@ -11,94 +11,14 @@ import {
   Table,
   Item,
   Segment,
-  Input
+  Input,
+  Popup
 } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
 import Breadcrumbs from "./Breadcrumbs";
 import "./ProjectAssessments.css";
-
-const fakeData = {
-  id: "fakeId1",
-  name: "Identity - IDP",
-  contact: "Meera Pankhania",
-  leadAssessor: "Leisa Reichart",
-  nextAssessment: "2017-12-01",
-  createdAt: "2016-03-27",
-  updatedAt: "2016-03-27",
-  assessments: [
-    {
-      id: "cj8dvy6da1olc0195hy26ayqeA",
-      when: "2017-10-05T03:11:13.052Z",
-      summary: "Good effort. Needs to try harder.",
-      leadAssessor: "Leisa Reichart",
-      project: {
-        id: "cj8dmhvkw1hai0195g2vkn4cs",
-        name: "Identity IDP"
-      },
-      goalAssessments: [
-        {
-          areasForImprovement: "a lot!",
-          assessor: "tyu",
-          evidence: "",
-          goalNumber: 1,
-          id: "cj8fhvyii7l5v0100zy3qdxkn",
-          positiveComments: "mostly positive",
-          rating: "Red"
-        },
-        {
-          areasForImprovement: "",
-          assessor: "",
-          evidence: "",
-          goalNumber: 2,
-          id: "cj8fhwp4zaav30112dm82xp2o",
-          positiveComments: "something positive",
-          rating: "Green"
-        }
-      ]
-    },
-    {
-      id: "cj8dvy6da1olc0195hy26ayqeB",
-      when: "2017-09-17T03:11:13.052Z",
-      summary: "Terrible. There are simply no words :(",
-      leadAssessor: "Julie Reynolds",
-      project: {
-        id: "cj8dmhvkw1hai0195g2vkn4cs",
-        name: "Identity IDP"
-      },
-      goalAssessments: [
-        {
-          areasForImprovement: "a lot!",
-          assessor: "tyu",
-          evidence: "",
-          goalNumber: 1,
-          id: "cj8fhvyii7l5v0100zy3qdxknA",
-          positiveComments: "mostly positive",
-          rating: "Red"
-        },
-        {
-          areasForImprovement: "Read a book",
-          assessor: "",
-          evidence: "",
-          goalNumber: 2,
-          id: "cj8fhwp4zaav30112dm82xp2oB",
-          positiveComments: "",
-          rating: "Amber"
-        },
-        {
-          areasForImprovement: "Words fail me",
-          assessor: "",
-          evidence: "",
-          goalNumber: 3,
-          id: "cj8fhwp4zaav30112dm82xp2oC",
-          positiveComments: "",
-          rating: "Amber"
-        }
-      ]
-    }
-  ]
-};
 
 class ProjectAssessments extends React.Component {
   constructor(props) {
@@ -228,30 +148,21 @@ class ProjectAssessments extends React.Component {
           <Table.Header fullWidth>
             <Table.Row>
               <Table.HeaderCell style={{ fontSize: "1.5rem" }}>
-                Assessments &nbsp;&nbsp;
-                <Button.Group toggle>
-                  <Button
-                    toggle
-                    icon="calendar"
-                    primary={this.state.view === "timeline"}
-                    onClick={() => this.handleSettingChange("view", "timeline")}
-                  />
-                  <Button
-                    toggle
-                    icon="comment"
-                    primary={this.state.view === "goal"}
-                    onClick={() => this.handleSettingChange("view", "goal")}
-                  />
-                </Button.Group>
+                Assessments
               </Table.HeaderCell>
 
               <Table.HeaderCell textAlign="right">
-                <Button
-                  positive
-                  icon="star"
-                  content="New Assessment"
-                  onClick={() =>
-                    this.handleCreate(model.id, model.leadAssessor)}
+                <Popup
+                  content="Create a new assessment"
+                  trigger={
+                    <Button
+                      positive
+                      icon="plus"
+                      content="New"
+                      onClick={() =>
+                        this.handleCreate(model.id, model.leadAssessor)}
+                    />
+                  }
                 />
               </Table.HeaderCell>
             </Table.Row>
@@ -370,3 +281,84 @@ export default compose(
     })
   })
 )(withRouter(ProjectAssessments));
+
+const fakeData = {
+  id: "fakeId1",
+  name: "Identity - IDP",
+  contact: "Meera Pankhania",
+  leadAssessor: "Leisa Reichart",
+  nextAssessment: "2017-12-01",
+  createdAt: "2016-03-27",
+  updatedAt: "2016-03-27",
+  assessments: [
+    {
+      id: "cj8dvy6da1olc0195hy26ayqeA",
+      when: "2017-10-05T03:11:13.052Z",
+      summary: "Good effort. Needs to try harder.",
+      leadAssessor: "Leisa Reichart",
+      project: {
+        id: "cj8dmhvkw1hai0195g2vkn4cs",
+        name: "Identity IDP"
+      },
+      goalAssessments: [
+        {
+          areasForImprovement: "a lot!",
+          assessor: "tyu",
+          evidence: "",
+          goalNumber: 1,
+          id: "cj8fhvyii7l5v0100zy3qdxkn",
+          positiveComments: "mostly positive",
+          rating: "Red"
+        },
+        {
+          areasForImprovement: "",
+          assessor: "",
+          evidence: "",
+          goalNumber: 2,
+          id: "cj8fhwp4zaav30112dm82xp2o",
+          positiveComments: "something positive",
+          rating: "Green"
+        }
+      ]
+    },
+    {
+      id: "cj8dvy6da1olc0195hy26ayqeB",
+      when: "2017-09-17T03:11:13.052Z",
+      summary: "Terrible. There are simply no words :(",
+      leadAssessor: "Julie Reynolds",
+      project: {
+        id: "cj8dmhvkw1hai0195g2vkn4cs",
+        name: "Identity IDP"
+      },
+      goalAssessments: [
+        {
+          areasForImprovement: "a lot!",
+          assessor: "tyu",
+          evidence: "",
+          goalNumber: 1,
+          id: "cj8fhvyii7l5v0100zy3qdxknA",
+          positiveComments: "mostly positive",
+          rating: "Red"
+        },
+        {
+          areasForImprovement: "Read a book",
+          assessor: "",
+          evidence: "",
+          goalNumber: 2,
+          id: "cj8fhwp4zaav30112dm82xp2oB",
+          positiveComments: "",
+          rating: "Amber"
+        },
+        {
+          areasForImprovement: "Words fail me",
+          assessor: "",
+          evidence: "",
+          goalNumber: 3,
+          id: "cj8fhwp4zaav30112dm82xp2oC",
+          positiveComments: "",
+          rating: "Amber"
+        }
+      ]
+    }
+  ]
+};
