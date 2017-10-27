@@ -91,6 +91,7 @@ class CreateOrEditProjectDialog extends React.Component {
 
   render() {
     const header = !!this.props.project ? "Edit project" : "Create project";
+    const buttonLabel = !!this.props.project ? "Save" : "Create";
     const emptyName = !this.state.name;
     return (
       <Modal
@@ -164,7 +165,7 @@ class CreateOrEditProjectDialog extends React.Component {
           <Button
             disabled={emptyName}
             positive
-            content="Create"
+            content={buttonLabel}
             onClick={this.handleCreate}
           />
         </Modal.Actions>

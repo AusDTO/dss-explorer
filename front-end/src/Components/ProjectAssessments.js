@@ -12,13 +12,15 @@ import {
   Item,
   Segment,
   Input,
-  Popup
+  Popup,
+  Header
 } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
 import Breadcrumbs from "./Breadcrumbs";
 import "./ProjectAssessments.css";
+import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
 
 class ProjectAssessments extends React.Component {
   constructor(props) {
@@ -35,7 +37,6 @@ class ProjectAssessments extends React.Component {
   };
 
   handleBlur = e => {
-    console.log("blur", this.state.changed);
     if (this.state.changed) {
       this.setState({ changed: false });
       this.handleSave(this.state);
@@ -67,7 +68,6 @@ class ProjectAssessments extends React.Component {
   };
 
   handleCreate = (projectId, leadAssessor) => {
-    console.log("creating assessment", projectId);
     this.props
       .createAssessmentMutation({
         variables: {
@@ -107,34 +107,22 @@ class ProjectAssessments extends React.Component {
         nextAssessment: dt.isValid() ? dt.format("D MMM YYYY") : ""
       };
     }
-
     const breadcrumbs = [
       { key: "home", content: "Home", href: "/" },
       { key: "projects", content: "Projects", href: "/projects" },
       { key: "project", content: model.name, active: true }
     ];
-
     return (
       <Container className="projectAssessments">
         <Breadcrumbs crumbs={breadcrumbs} />
         <Segment>
-          <TopInnerHeading>{model.name}</TopInnerHeading>
-          <Input
-            fluid
-            id="contact"
-            label="Contact"
-            value={this.state.contact}
-            onChange={this.handleChange}
-            onBlur={this.handleBlur}
+          <CreateOrEditProjectDialog
+            project={model}
+            trigger={
+              <Button className="editButton" icon="pencil" content="Edit" />
+            }
           />
-          <Input
-            fluid
-            id="leadAssessor"
-            label="Lead Assessor"
-            value={this.state.leadAssessor}
-            onChange={this.handleChange}
-            onBlur={this.handleBlur}
-          />
+          <Header>{model.name}</Header>
           <DateInput
             fluid
             id="nextAssessment"
@@ -147,7 +135,7 @@ class ProjectAssessments extends React.Component {
         <Table size="small">
           <Table.Header fullWidth>
             <Table.Row>
-              <Table.HeaderCell style={{ fontSize: "1.5rem" }}>
+              <Table.HeaderCell className="header2">
                 Assessments
               </Table.HeaderCell>
 
@@ -209,11 +197,14 @@ const ProjectAssessmentsQuery = gql`
     Project(id: $projId) {
       id
       name
+      organisation
       contact
       leadAssessor
       nextAssessment
       createdAt
       updatedAt
+      stage
+      assessorType
       assessments(orderBy: when_DESC) {
         id
         when

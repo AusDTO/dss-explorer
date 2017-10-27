@@ -2,6 +2,17 @@
   width: 10em;
 }
 
-.projectAssessments .newButton {
+.projectAssessments .ui.header {
+  font-size: 2em;
+  line-height: 1em;
+  color: #273cb3;
+  margin-top: 0px;
+}
+
+.projectAssessments .editButton {
   float: right;
+}
+
+.projectAssessments .header2 {
+  font-size: 1.75em;
 }
