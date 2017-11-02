@@ -2,9 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import Auth0Lock from "auth0-lock";
 import { Button } from "semantic-ui-react";
-import { graphql, gql, compose } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 
 class LoginAuth0 extends React.Component {
+  static propTypes = {
+    clientId: PropTypes.string.isRequired,
+    domain: PropTypes.string.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -24,11 +30,6 @@ class LoginAuth0 extends React.Component {
       }
     });
   }
-
-  static propTypes = {
-    clientId: PropTypes.string.isRequired,
-    domain: PropTypes.string.isRequired
-  };
 
   goToRoot = () => {
     if (window.location.pathname === "/") {
@@ -117,12 +118,7 @@ class LoginAuth0 extends React.Component {
 }
 
 const createUser = gql`
-  mutation CreateUser(
-    $idToken: String!
-    $name: String!
-    $emailAddress: String!
-    $avatarUrl: String
-  ) {
+  mutation CreateUser($idToken: String!, $name: String!, $emailAddress: String!, $avatarUrl: String) {
     createUser(
       authProvider: { auth0: { idToken: $idToken } }
       name: $name
@@ -152,7 +148,4 @@ const createUser = gql`
 //   }
 // `;
 
-export default compose(
-  graphql(createUser, { name: "createUser" })
-  // graphql(updateUser, { name: "updateUser" }),
-)(LoginAuth0);
+export default graphql(createUser, { name: "createUser" })(LoginAuth0);

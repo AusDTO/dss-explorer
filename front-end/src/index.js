@@ -5,36 +5,50 @@ import "semantic-ui-css/semantic.min.css";
 import "./index.css";
 import registerServiceWorker from "./registerServiceWorker";
 import App from "./App.js";
-import {
-  ApolloClient,
-  ApolloProvider,
-  createNetworkInterface
-} from "react-apollo";
+import { ApolloProvider } from "react-apollo";
+import { ApolloClient } from "apollo-client";
+import { ApolloLink } from "apollo-link";
+import { setContext } from "apollo-link-context";
+import { createHttpLink } from "apollo-link-http";
+import { WebSocketLink } from "apollo-link-ws";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { getOperationAST } from "graphql";
 
-const networkInterface = createNetworkInterface({
-  uri: "https://api.graph.cool/simple/v1/cj8d0cdxq04f40144ryvk4vf4"
-});
+const simpleEndpoint = "https://api.graph.cool/simple/v1/cj8d0cdxq04f40144ryvk4vf4";
+const wsEndpoint = "wss://subscriptions.graph.cool/v1/cj8d0cdxq04f40144ryvk4vf4";
 
-// use the auth0IdToken in localStorage for authorized requests
-networkInterface.use([
-  {
-    applyMiddleware(req, next) {
-      if (!req.options.headers) {
-        req.options.headers = {};
-      }
+const httpLink = createHttpLink({ uri: simpleEndpoint });
+const middlewareLink = setContext(() => ({
+  headers: {
+    authorization: `Bearer ${localStorage.getItem("auth0IdToken")}`
+  }
+}));
 
-      // get the authentication token from local storage if it exists
-      if (localStorage.getItem("auth0IdToken")) {
-        req.options.headers.authorization = `Bearer ${localStorage.getItem(
-          "auth0IdToken"
-        )}`;
-      }
-      next();
+const wrappedHttpLink = middlewareLink.concat(httpLink);
+
+const wsLink = new WebSocketLink({
+  uri: wsEndpoint,
+  options: {
+    reconnect: true,
+    timeout: 30000, // See https://github.com/apollographql/subscriptions-transport-ws/issues/220
+    connectionParams: {
+      authorization: `Bearer ${localStorage.getItem("auth0IdToken")}`
     }
   }
-]);
+});
 
-const client = new ApolloClient({ networkInterface });
+const link = ApolloLink.split(
+  operation => {
+    const operationAST = getOperationAST(operation.query, operation.operationName);
+    return !!operationAST && operationAST.operation === "subscription";
+  },
+  wsLink,
+  wrappedHttpLink
+);
+
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({ link, cache });
 
 ReactDOM.render(
   <ApolloProvider client={client}>

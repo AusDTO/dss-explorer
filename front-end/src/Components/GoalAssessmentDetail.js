@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { graphql, gql, compose } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import Timestamp from "./Timestamp";
 import { CalculateRatingText, CalculateRatingColor } from "./Goals";
 
@@ -25,9 +26,7 @@ class GoalAssessmentDetail extends React.Component {
     return (
       <Button
         value={rating}
-        color={
-          this.state.rating === rating ? CalculateRatingColor(rating) : null
-        }
+        color={this.state.rating === rating ? CalculateRatingColor(rating) : null}
         content={CalculateRatingText(rating)}
       />
     );
@@ -130,11 +129,7 @@ class GoalAssessmentDetail extends React.Component {
           />
           <div>
             <label>Last updated: </label>
-            <Timestamp
-              when={this.state.updatedAt}
-              type="difference"
-              defaultValue="never"
-            />
+            <Timestamp when={this.state.updatedAt} type="difference" defaultValue="never" />
           </div>
         </Form>
       </div>
@@ -194,11 +189,10 @@ const userQuery = gql`
   }
 `;
 
-export default compose(
-  graphql(userQuery),
+export default graphql(userQuery)(
   graphql(updateGoal, {
     options: {
       refetchQueries: ["AssessmentPageQuery"]
     }
-  })
-)(GoalAssessmentDetail);
+  })(GoalAssessmentDetail)
+);

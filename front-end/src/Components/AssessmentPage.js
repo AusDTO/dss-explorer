@@ -2,17 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import moment from "moment";
-import { graphql, gql, compose } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
-import {
-  Container,
-  Menu,
-  Tab,
-  Input,
-  Segment,
-  Popup,
-  Item
-} from "semantic-ui-react";
+import { Container, Menu, Tab, Input, Segment, Popup, Item } from "semantic-ui-react";
 import Timestamp from "./Timestamp";
 import GoalLight from "./GoalLight";
 import GoalAssessment from "./GoalAssessment";
@@ -25,6 +18,11 @@ class AssessmentPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+  componentWillMount() {
+    this.props.subscribeToGoalAssessments({
+      ignored: ""
+    });
   }
   handleChange = e => {
     this.setState({ changed: true, [e.target.id]: e.target.value });
@@ -75,9 +73,7 @@ class AssessmentPage extends React.Component {
       };
     }
     const panels = Goals.map(goal => {
-      const goalAssessment = model.goalAssessments.find(
-        x => x.goalNumber === goal.number
-      );
+      const goalAssessment = model.goalAssessments.find(x => x.goalNumber === goal.number);
       return {
         menuItem: (
           <Menu.Item key={goal.number} fitted>
@@ -85,19 +81,10 @@ class AssessmentPage extends React.Component {
               <Popup
                 key={goal.number}
                 flowing
-                trigger={
-                  <GoalLight
-                    text={goal.number}
-                    ga={goalAssessment}
-                    size="big"
-                  />
-                }
+                trigger={<GoalLight text={goal.number} ga={goalAssessment} size="big" />}
               >
                 <Item.Group>
-                  <Item
-                    header={CalculateGoalTitle(goal)}
-                    description={goal.description}
-                  />
+                  <Item header={CalculateGoalTitle(goal)} description={goal.description} />
                 </Item.Group>
               </Popup>
             </div>
@@ -166,11 +153,7 @@ class AssessmentPage extends React.Component {
             onBlur={this.handleBlur}
           />
         </Segment>
-        <Tab
-          panes={panels}
-          renderActiveOnly={false}
-          onTabChange={this.handleTabChange}
-        />
+        <Tab panes={panels} renderActiveOnly={false} onTabChange={this.handleTabChange} />
       </Container>
     );
   }
@@ -223,18 +206,8 @@ const AssessmentPageQuery = gql`
 `;
 
 const UpdateAssessmentMutation = gql`
-  mutation UpdateAssessmentMutation(
-    $id: ID!
-    $when: DateTime!
-    $leadAssessor: String
-    $summary: String
-  ) {
-    updateAssessment(
-      id: $id
-      when: $when
-      leadAssessor: $leadAssessor
-      summary: $summary
-    ) {
+  mutation UpdateAssessmentMutation($id: ID!, $when: DateTime!, $leadAssessor: String, $summary: String) {
+    updateAssessment(id: $id, when: $when, leadAssessor: $leadAssessor, summary: $summary) {
       id
       when
       updatedAt
@@ -244,17 +217,71 @@ const UpdateAssessmentMutation = gql`
   }
 `;
 
-export default compose(
-  graphql(UpdateAssessmentMutation, { name: "updateAssessmentMutation" }),
+const GoalAssessmentSubscription = gql`
+  subscription updateGoalAssessment {
+    GoalAssessment(filter: { mutation_in: [CREATED, UPDATED] }) {
+      mutation
+      node {
+        areasForImprovement
+        assessor
+        evidence
+        goalNumber
+        id
+        positiveComments
+        rating
+        updatedAt
+      }
+      updatedFields
+      previousValues {
+        areasForImprovement
+        assessor
+        evidence
+        goalNumber
+        id
+        positiveComments
+        rating
+        updatedAt
+      }
+    }
+  }
+`;
+
+export default graphql(UpdateAssessmentMutation, { name: "updateAssessmentMutation" })(
   graphql(AssessmentPageQuery, {
     name: "data",
     options: props => ({
       variables: {
         assessmentId: props.match.params.id
       }
-    })
-  })
-)(AssessmentPage);
+    }),
+    props: props => {
+      return {
+        ...props,
+        subscribeToGoalAssessments: params => {
+          return props.data.subscribeToMore({
+            document: GoalAssessmentSubscription,
+            variables: {
+              assessmentId: params.ignored
+            },
+            updateQuery: (prev, { subscriptionData }) => {
+              console.log("subscription update", subscriptionData.data);
+              if (!subscriptionData.data) {
+                return prev;
+              }
+              return prev;
+              // const newFeedItem = subscriptionData.data.commentAdded;
+              // return Object.assign({}, prev, {
+              //     entry: {
+              //         comments: [newFeedItem, ...prev.entry.comments]
+              //     }
+              // });
+            }
+          });
+        }
+      };
+    }
+  })(AssessmentPage)
+);
 
 const fakeData = {
   id: "cj8l6zrsabqq90100y8kjiq81",
@@ -752,8 +779,7 @@ const fakeData = {
             __typename: "GoalAssessment"
           },
           {
-            areasForImprovement:
-              "Almost everything. What are you people even doing?",
+            areasForImprovement: "Almost everything. What are you people even doing?",
             assessor: "Joe Blogs",
             evidence: "",
             goalNumber: 4,
@@ -846,8 +872,7 @@ const fakeData = {
   },
   goalAssessments: [
     {
-      areasForImprovement:
-        "The user should be able to use the system without reading the manual first! No RTFM here!!",
+      areasForImprovement: "The user should be able to use the system without reading the manual first! No RTFM here!!",
       assessor: "Leisa Reichelt",
       evidence: "",
       goalNumber: 1,

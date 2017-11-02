@@ -2,7 +2,8 @@ import React from "react";
 import { Container, Menu, Dropdown, Image } from "semantic-ui-react";
 import Logo from "./Logo.js";
 import LoginAuth0 from "./LoginAuth0";
-import { graphql, gql } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import { withRouter } from "react-router-dom";
 import "./PageHeader.css";
 
@@ -49,11 +50,7 @@ class PageHeader extends React.Component {
                     <Image avatar src={user.avatarUrl} />
                     <Dropdown text={user.name || "Unnamed"}>
                       <Dropdown.Menu>
-                        <Dropdown.Item
-                          icon="power"
-                          text="Logout"
-                          onClick={this.logout}
-                        />
+                        <Dropdown.Item icon="power" text="Logout" onClick={this.logout} />
                       </Dropdown.Menu>
                     </Dropdown>
                   </Menu.Header>
@@ -82,6 +79,4 @@ const userQuery = gql`
   }
 `;
 
-export default graphql(userQuery, { options: { fetchPolicy: "network-only" } })(
-  withRouter(PageHeader)
-);
+export default graphql(userQuery, { options: { fetchPolicy: "network-only" } })(withRouter(PageHeader));

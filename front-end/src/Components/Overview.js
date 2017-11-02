@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { graphql, gql } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import { Container, Segment, Statistic, Header } from "semantic-ui-react";
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
 
@@ -58,19 +59,11 @@ class Overview extends React.Component {
           <TopInnerHeading>Overview</TopInnerHeading>
           <Segment>
             <Header as="h2">Last 30 days</Header>
-            <Statistic.Group
-              widths={items.length}
-              items={items}
-              color="green"
-            />
+            <Statistic.Group widths={items.length} items={items} color="green" />
           </Segment>
           <Segment>
             <Header as="h2">All time</Header>
-            <Statistic.Group
-              widths={items.length}
-              items={items2}
-              color="green"
-            />
+            <Statistic.Group widths={items.length} items={items2} color="green" />
           </Segment>
         </Segment>
       </Container>

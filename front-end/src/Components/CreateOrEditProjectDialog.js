@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { graphql, gql, compose } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import { Button, Container, Modal, Input } from "semantic-ui-react";
 import { CalculateStageColor, CalculateStageText } from "./Stage";
 
@@ -79,14 +80,7 @@ class CreateOrEditProjectDialog extends React.Component {
   };
 
   makeAssessorButton = (text, stage, color) => {
-    return (
-      <Button
-        key={stage}
-        value={stage}
-        color={this.state.assessorType === stage ? color : null}
-        content={text}
-      />
-    );
+    return <Button key={stage} value={stage} color={this.state.assessorType === stage ? color : null} content={text} />;
   };
 
   render() {
@@ -120,13 +114,7 @@ class CreateOrEditProjectDialog extends React.Component {
               value={this.state.organisation}
               onChange={this.handleChange}
             />
-            <Input
-              fluid
-              label="Contact"
-              id="contact"
-              value={this.state.contact}
-              onChange={this.handleChange}
-            />
+            <Input fluid label="Contact" id="contact" value={this.state.contact} onChange={this.handleChange} />
             <Input
               fluid
               id="leadAssessor"
@@ -135,10 +123,7 @@ class CreateOrEditProjectDialog extends React.Component {
               onChange={this.handleChange}
             />
             <LabelledField text="Stage">
-              <Button.Group
-                id="stage"
-                onClick={e => this.handleFieldChange("stage", e)}
-              >
+              <Button.Group id="stage" onClick={e => this.handleFieldChange("stage", e)}>
                 {this.makeStageButton("Discovery")}
                 <Button.Or />
                 {this.makeStageButton("Alpha")}
@@ -149,10 +134,7 @@ class CreateOrEditProjectDialog extends React.Component {
               </Button.Group>
             </LabelledField>
             <LabelledField text="Assessor type">
-              <Button.Group
-                id="assessorType"
-                onClick={e => this.handleFieldChange("assessorType", e)}
-              >
+              <Button.Group id="assessorType" onClick={e => this.handleFieldChange("assessorType", e)}>
                 {this.makeAssessorButton("DTA-led", "DTA", "teal")}
                 <Button.Or />
                 {this.makeAssessorButton("Self assessed", "Self", "blue")}
@@ -162,12 +144,7 @@ class CreateOrEditProjectDialog extends React.Component {
         </Modal.Content>
         <Modal.Actions>
           <Button content="Close" onClick={this.handleCancel} />
-          <Button
-            disabled={emptyName}
-            positive
-            content={buttonLabel}
-            onClick={this.handleCreate}
-          />
+          <Button disabled={emptyName} positive content={buttonLabel} onClick={this.handleCreate} />
         </Modal.Actions>
       </Modal>
     );
@@ -215,9 +192,7 @@ const upsertProject = gql`
   }
 `;
 
-export default compose(
-  graphql(upsertProject, {
-    name: "upsertProject",
-    options: { refetchQueries: ["ProjectListQuery"] }
-  })
-)(CreateOrEditProjectDialog);
+export default graphql(upsertProject, {
+  name: "upsertProject",
+  options: { refetchQueries: ["ProjectListQuery"] }
+})(CreateOrEditProjectDialog);

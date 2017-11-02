@@ -1,20 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { get } from "lodash";
+import { get, flowRight } from "lodash";
 import moment from "moment";
-import { graphql, gql, compose } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
-import {
-  Container,
-  Button,
-  Table,
-  Item,
-  Segment,
-  Input,
-  Popup,
-  Header
-} from "semantic-ui-react";
+import { Container, Button, Table, Item, Segment, Input, Popup, Header } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
@@ -44,12 +36,7 @@ class ProjectAssessments extends React.Component {
   };
 
   handleSave = ({ id, contact, leadAssessor, nextAssessment }) => {
-    console.log(
-      "updating project details",
-      contact,
-      leadAssessor,
-      nextAssessment
-    );
+    console.log("updating project details", contact, leadAssessor, nextAssessment);
     this.props
       .updateProjectMutation({
         variables: {
@@ -118,9 +105,7 @@ class ProjectAssessments extends React.Component {
         <Segment>
           <CreateOrEditProjectDialog
             project={model}
-            trigger={
-              <Button className="editButton" icon="pencil" content="Edit" />
-            }
+            trigger={<Button className="editButton" icon="pencil" content="Edit" />}
           />
           <Header>{model.name}</Header>
           <DateInput
@@ -135,9 +120,7 @@ class ProjectAssessments extends React.Component {
         <Table size="small">
           <Table.Header fullWidth>
             <Table.Row>
-              <Table.HeaderCell className="header2">
-                Assessments
-              </Table.HeaderCell>
+              <Table.HeaderCell className="header2">Assessments</Table.HeaderCell>
 
               <Table.HeaderCell textAlign="right">
                 <Popup
@@ -147,8 +130,7 @@ class ProjectAssessments extends React.Component {
                       positive
                       icon="plus"
                       content="New"
-                      onClick={() =>
-                        this.handleCreate(model.id, model.leadAssessor)}
+                      onClick={() => this.handleCreate(model.id, model.leadAssessor)}
                     />
                   }
                 />
@@ -223,18 +205,8 @@ const ProjectAssessmentsQuery = gql`
 `;
 
 const UpdateProjectMutation = gql`
-  mutation UpdateProjectMutation(
-    $projId: ID!
-    $contact: String
-    $leadAssessor: String
-    $nextAssessment: DateTime
-  ) {
-    updateProject(
-      id: $projId
-      contact: $contact
-      leadAssessor: $leadAssessor
-      nextAssessment: $nextAssessment
-    ) {
+  mutation UpdateProjectMutation($projId: ID!, $contact: String, $leadAssessor: String, $nextAssessment: DateTime) {
+    updateProject(id: $projId, contact: $contact, leadAssessor: $leadAssessor, nextAssessment: $nextAssessment) {
       id
       updatedAt
       contact
@@ -245,22 +217,14 @@ const UpdateProjectMutation = gql`
 `;
 
 const CreateAssessmentMutation = gql`
-  mutation CreateAssessmentMutation(
-    $projId: ID!
-    $when: DateTime!
-    $leadAssessor: String
-  ) {
-    createAssessment(
-      when: $when
-      projectId: $projId
-      leadAssessor: $leadAssessor
-    ) {
+  mutation CreateAssessmentMutation($projId: ID!, $when: DateTime!, $leadAssessor: String) {
+    createAssessment(when: $when, projectId: $projId, leadAssessor: $leadAssessor) {
       id
     }
   }
 `;
 
-export default compose(
+export default flowRight(
   graphql(UpdateProjectMutation, { name: "updateProjectMutation" }),
   graphql(CreateAssessmentMutation, { name: "createAssessmentMutation" }),
   graphql(ProjectAssessmentsQuery, {

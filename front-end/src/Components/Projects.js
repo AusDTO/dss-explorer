@@ -1,20 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { graphql, gql } from "react-apollo";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo";
 import moment from "moment";
 import { get } from "lodash";
 
 import { Loading, Error } from "./Basics";
 import Timestamp from "./Timestamp";
-import {
-  Label,
-  Container,
-  Item,
-  Header,
-  Button,
-  Table,
-  Popup
-} from "semantic-ui-react";
+import { Label, Container, Item, Header, Button, Table, Popup } from "semantic-ui-react";
 import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
 import { CalculateStageColor, CalculateStageText } from "./Stage";
 
@@ -44,10 +37,7 @@ class ProjectList extends React.Component {
       return <Error data={this.props.data} />;
     }
     const models = this.props.data.allProjects || fakeData;
-    const sortedModels =
-      this.state.sortOrder === "name"
-        ? this.sortByName(models)
-        : this.sortByDate(models);
+    const sortedModels = this.state.sortOrder === "name" ? this.sortByName(models) : this.sortByDate(models);
     return (
       <Container className="projects">
         <Table>
@@ -91,14 +81,7 @@ class ProjectList extends React.Component {
                   trigger={
                     <Popup
                       content="Create a new project"
-                      trigger={
-                        <Button
-                          className="newButton"
-                          positive
-                          icon="plus"
-                          content="New"
-                        />
-                      }
+                      trigger={<Button className="newButton" positive icon="plus" content="New" />}
                     />
                   }
                 />
@@ -111,10 +94,7 @@ class ProjectList extends React.Component {
               const when = moment(proj.nextAssessment);
               const now = moment();
               const overdue = when.isValid() && when.isBefore(now);
-              const upcoming =
-                when.isValid() &&
-                when.isAfter(now) &&
-                when.isBefore(now.add("45", "day"));
+              const upcoming = when.isValid() && when.isAfter(now) && when.isBefore(now.add("45", "day"));
               return (
                 <Table.Row key={proj.id}>
                   <Table.Cell>
@@ -130,19 +110,12 @@ class ProjectList extends React.Component {
                   <Table.Cell>
                     <Timestamp when={proj.nextAssessment} />
                     <div>
-                      {upcoming && (
-                        <Label color="green" pointing content="Upcoming" />
-                      )}
-                      {overdue && (
-                        <Label color="red" pointing content="Overdue" />
-                      )}
+                      {upcoming && <Label color="green" pointing content="Upcoming" />}
+                      {overdue && <Label color="red" pointing content="Overdue" />}
                     </div>
                   </Table.Cell>
                   <Table.Cell>
-                    <Timestamp
-                      when={get(mostRecentAssessment, "when")}
-                      defaultValue="[never]"
-                    />
+                    <Timestamp when={get(mostRecentAssessment, "when")} defaultValue="[never]" />
                   </Table.Cell>
                   <Table.Cell>{proj.contact}</Table.Cell>
                   <Table.Cell>{proj.leadAssessor}</Table.Cell>
