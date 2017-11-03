@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Segment } from "semantic-ui-react";
-import { Loading, TopInnerHeading, Error } from "./Basics.js";
+import { TopInnerHeading } from "./Basics.js";
 
 class Admin extends React.Component {
   render() {

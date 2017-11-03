@@ -18,27 +18,32 @@ class GoalAssessmentDetail extends React.Component {
       evidence: "",
       positiveComments: "",
       rating: "NA",
-      ...props.goalAssessment
+      updatedAt: ""
     };
   }
+
+  componentWillReceiveProps = nextProps => {
+    if (!!nextProps.goalAssessment)
+      this.setState({ ...nextProps.goalAssessment });
+  };
 
   makeRatingButton = (rating, color) => {
     return (
       <Button
         value={rating}
-        color={this.state.rating === rating ? CalculateRatingColor(rating) : null}
+        color={
+          this.state.rating === rating ? CalculateRatingColor(rating) : null
+        }
         content={CalculateRatingText(rating)}
       />
     );
   };
 
   handleChange = e => {
-    console.log("handleChange", e.target);
     this.setState({ changed: true, [e.target.id]: e.target.value });
   };
 
   handleRatingChange = e => {
-    console.log("handleRatingChange", e.target);
     if (!this.state.assessor && this.props.data.user) {
       this.setState({ assessor: this.props.data.user.name });
     }
@@ -48,7 +53,6 @@ class GoalAssessmentDetail extends React.Component {
   };
 
   handleBlur = e => {
-    console.log("blur", this.state.changed);
     if (this.state.changed) {
       this.handleSave();
     }
@@ -77,6 +81,7 @@ class GoalAssessmentDetail extends React.Component {
         console.log("there was an error sending the query", error);
       });
   };
+
   render() {
     return (
       <div>
@@ -129,7 +134,11 @@ class GoalAssessmentDetail extends React.Component {
           />
           <div>
             <label>Last updated: </label>
-            <Timestamp when={this.state.updatedAt} type="difference" defaultValue="never" />
+            <Timestamp
+              when={this.state.updatedAt}
+              type="difference"
+              defaultValue="never"
+            />
           </div>
         </Form>
       </div>

@@ -15,7 +15,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
 
 const simpleEndpoint = "https://api.graph.cool/simple/v1/cj8d0cdxq04f40144ryvk4vf4";
-const wsEndpoint = "wss://subscriptions.graph.cool/v1/cj8d0cdxq04f40144ryvk4vf4";
+const wsEndpoint = "wss://subscriptions.us-west-2.graph.cool/v1/cj8d0cdxq04f40144ryvk4vf4";
 
 const httpLink = createHttpLink({ uri: simpleEndpoint });
 const middlewareLink = setContext(() => ({

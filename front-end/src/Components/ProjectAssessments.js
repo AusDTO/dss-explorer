@@ -5,8 +5,16 @@ import { get, flowRight } from "lodash";
 import moment from "moment";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
-import { Loading, TopInnerHeading, Error } from "./Basics.js";
-import { Container, Button, Table, Item, Segment, Input, Popup, Header } from "semantic-ui-react";
+import { Loading, Error } from "./Basics.js";
+import {
+  Container,
+  Button,
+  Table,
+  Item,
+  Segment,
+  Popup,
+  Header
+} from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
@@ -19,6 +27,25 @@ class ProjectAssessments extends React.Component {
     super(props);
     this.state = { view: "timeline" };
   }
+
+  componentWillReceiveProps = newProps => {
+    var model = get(newProps.data, "Project");
+
+    if (
+      !model ||
+      (this.state.updatedAt && model.updatedAt === this.state.updatedAt)
+    ) {
+      return;
+    }
+
+    const dt = moment(model.nextAssessment);
+    this.setState({
+      ...model,
+      contact: model.contact || "",
+      leadAssessor: model.leadAssessor || "",
+      nextAssessment: dt.isValid() ? dt.format("D MMM YYYY") : ""
+    });
+  };
 
   handleChange = e => {
     this.setState({ changed: true, [e.target.id]: e.target.value });
@@ -36,7 +63,12 @@ class ProjectAssessments extends React.Component {
   };
 
   handleSave = ({ id, contact, leadAssessor, nextAssessment }) => {
-    console.log("updating project details", contact, leadAssessor, nextAssessment);
+    console.log(
+      "updating project details",
+      contact,
+      leadAssessor,
+      nextAssessment
+    );
     this.props
       .updateProjectMutation({
         variables: {
@@ -83,17 +115,6 @@ class ProjectAssessments extends React.Component {
     if (!model) {
       return <div>Unknown project</div>;
     }
-    // Initialize state -- can't do this in the constructor since the data is still loading at that point
-    if (model.updatedAt !== this.state.updatedAt) {
-      const dt = moment(model.nextAssessment);
-      this.state = {
-        ...this.state,
-        ...model,
-        contact: model.contact || "",
-        leadAssessor: model.leadAssessor || "",
-        nextAssessment: dt.isValid() ? dt.format("D MMM YYYY") : ""
-      };
-    }
     const breadcrumbs = [
       { key: "home", content: "Home", href: "/" },
       { key: "projects", content: "Projects", href: "/projects" },
@@ -105,7 +126,9 @@ class ProjectAssessments extends React.Component {
         <Segment>
           <CreateOrEditProjectDialog
             project={model}
-            trigger={<Button className="editButton" icon="pencil" content="Edit" />}
+            trigger={
+              <Button className="editButton" icon="pencil" content="Edit" />
+            }
           />
           <Header>{model.name}</Header>
           <DateInput
@@ -120,7 +143,9 @@ class ProjectAssessments extends React.Component {
         <Table size="small">
           <Table.Header fullWidth>
             <Table.Row>
-              <Table.HeaderCell className="header2">Assessments</Table.HeaderCell>
+              <Table.HeaderCell className="header2">
+                Assessments
+              </Table.HeaderCell>
 
               <Table.HeaderCell textAlign="right">
                 <Popup
@@ -130,7 +155,8 @@ class ProjectAssessments extends React.Component {
                       positive
                       icon="plus"
                       content="New"
-                      onClick={() => this.handleCreate(model.id, model.leadAssessor)}
+                      onClick={() =>
+                        this.handleCreate(model.id, model.leadAssessor)}
                     />
                   }
                 />
@@ -205,8 +231,18 @@ const ProjectAssessmentsQuery = gql`
 `;
 
 const UpdateProjectMutation = gql`
-  mutation UpdateProjectMutation($projId: ID!, $contact: String, $leadAssessor: String, $nextAssessment: DateTime) {
-    updateProject(id: $projId, contact: $contact, leadAssessor: $leadAssessor, nextAssessment: $nextAssessment) {
+  mutation UpdateProjectMutation(
+    $projId: ID!
+    $contact: String
+    $leadAssessor: String
+    $nextAssessment: DateTime
+  ) {
+    updateProject(
+      id: $projId
+      contact: $contact
+      leadAssessor: $leadAssessor
+      nextAssessment: $nextAssessment
+    ) {
       id
       updatedAt
       contact
@@ -217,8 +253,16 @@ const UpdateProjectMutation = gql`
 `;
 
 const CreateAssessmentMutation = gql`
-  mutation CreateAssessmentMutation($projId: ID!, $when: DateTime!, $leadAssessor: String) {
-    createAssessment(when: $when, projectId: $projId, leadAssessor: $leadAssessor) {
+  mutation CreateAssessmentMutation(
+    $projId: ID!
+    $when: DateTime!
+    $leadAssessor: String
+  ) {
+    createAssessment(
+      when: $when
+      projectId: $projId
+      leadAssessor: $leadAssessor
+    ) {
       id
     }
   }
