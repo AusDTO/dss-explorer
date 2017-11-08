@@ -9,6 +9,9 @@ const Timestamp = ({ when = "", type = "date", defaultValue = "" }) => {
     if (type === "date") {
       return dt.format("D MMM YYYY");
     }
+    if (type === "datetime") {
+      return dt.format("D MMM YYYY, h:mm A");
+    }
     if (type === "difference") {
       return moment.duration(dt.diff(moment())).humanize(true);
     }

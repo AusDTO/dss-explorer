@@ -5,15 +5,7 @@ import moment from "moment";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
-import {
-  Container,
-  Menu,
-  Tab,
-  Input,
-  Segment,
-  Popup,
-  Item
-} from "semantic-ui-react";
+import { Container, Menu, Tab, Input, Segment, Popup, Item } from "semantic-ui-react";
 import Timestamp from "./Timestamp";
 import GoalLight from "./GoalLight";
 import GoalAssessment from "./GoalAssessment";
@@ -36,8 +28,7 @@ class AssessmentPage extends React.Component {
   componentWillReceiveProps = newProps => {
     var model = get(newProps.data, "Assessment");
     if (!model) return;
-    if (this.state.updatedAt && model.updatedAt === this.state.updatedAt)
-      return;
+    if (this.state.updatedAt && model.updatedAt === this.state.updatedAt) return;
 
     const dt = moment(model.when);
     this.setState({
@@ -86,9 +77,7 @@ class AssessmentPage extends React.Component {
       return <div>Unknown assessment</div>;
     }
     const panels = Goals.map(goal => {
-      const goalAssessment = model.goalAssessments.find(
-        x => x.goalNumber === goal.number
-      );
+      const goalAssessment = model.goalAssessments.find(x => x.goalNumber === goal.number);
       return {
         menuItem: (
           <Menu.Item key={goal.number} fitted>
@@ -96,19 +85,10 @@ class AssessmentPage extends React.Component {
               <Popup
                 key={goal.number}
                 flowing
-                trigger={
-                  <GoalLight
-                    text={goal.number}
-                    ga={goalAssessment}
-                    size="big"
-                  />
-                }
+                trigger={<GoalLight text={goal.number} ga={goalAssessment} size="big" />}
               >
                 <Item.Group>
-                  <Item
-                    header={CalculateGoalTitle(goal)}
-                    description={goal.description}
-                  />
+                  <Item header={CalculateGoalTitle(goal)} description={goal.description} />
                 </Item.Group>
               </Popup>
             </div>
@@ -177,11 +157,7 @@ class AssessmentPage extends React.Component {
             onBlur={this.handleBlur}
           />
         </Segment>
-        <Tab
-          panes={panels}
-          renderActiveOnly={false}
-          onTabChange={this.handleTabChange}
-        />
+        <Tab panes={panels} renderActiveOnly={false} />
       </Container>
     );
   }
@@ -234,18 +210,8 @@ const AssessmentPageQuery = gql`
 `;
 
 const UpdateAssessmentMutation = gql`
-  mutation UpdateAssessmentMutation(
-    $id: ID!
-    $when: DateTime!
-    $leadAssessor: String
-    $summary: String
-  ) {
-    updateAssessment(
-      id: $id
-      when: $when
-      leadAssessor: $leadAssessor
-      summary: $summary
-    ) {
+  mutation UpdateAssessmentMutation($id: ID!, $when: DateTime!, $leadAssessor: String, $summary: String) {
+    updateAssessment(id: $id, when: $when, leadAssessor: $leadAssessor, summary: $summary) {
       id
       when
       updatedAt
@@ -257,12 +223,7 @@ const UpdateAssessmentMutation = gql`
 
 const GoalAssessmentSubscription = gql`
   subscription updateGoalAssessment($assessmentId: ID!) {
-    GoalAssessment(
-      filter: {
-        mutation_in: [CREATED, UPDATED]
-        node: { assessment: { id: $assessmentId } }
-      }
-    ) {
+    GoalAssessment(filter: { mutation_in: [CREATED, UPDATED], node: { assessment: { id: $assessmentId } } }) {
       mutation
       node {
         areasForImprovement
@@ -309,12 +270,7 @@ export default graphql(UpdateAssessmentMutation, {
               assessmentId: params.assessmentId
             },
             updateQuery: (prev, { subscriptionData }) => {
-              console.log(
-                "subscription update",
-                subscriptionData,
-                "previous",
-                prev
-              );
+              console.log("subscription update", subscriptionData, "previous", prev);
               if (!subscriptionData.GoalAssessment) {
                 return prev;
               }
@@ -833,8 +789,7 @@ const fakeData = {
             __typename: "GoalAssessment"
           },
           {
-            areasForImprovement:
-              "Almost everything. What are you people even doing?",
+            areasForImprovement: "Almost everything. What are you people even doing?",
             assessor: "Joe Blogs",
             evidence: "",
             goalNumber: 4,
@@ -927,8 +882,7 @@ const fakeData = {
   },
   goalAssessments: [
     {
-      areasForImprovement:
-        "The user should be able to use the system without reading the manual first! No RTFM here!!",
+      areasForImprovement: "The user should be able to use the system without reading the manual first! No RTFM here!!",
       assessor: "Leisa Reichelt",
       evidence: "",
       goalNumber: 1,

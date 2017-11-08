@@ -28,30 +28,47 @@ class Overview extends React.Component {
     var model = this.props.data || fakeData;
     const items = [
       {
+        key: "1-1",
         label: "Projects",
         value: Math.trunc(model._allProjectsMeta.count / 2).toLocaleString()
       },
       {
+        key: "1-2",
         label: "Users",
         value: Math.trunc(model._allUsersMeta.count / 2).toLocaleString()
       },
       {
+        key: "1-3",
         label: "Assessments",
         value: Math.trunc(model._allAssessmentsMeta.count / 2).toLocaleString()
       },
-      { label: "Sign Ins", value: 101 }
+      {
+        key: "1-4",
+        label: "Sign Ins",
+        value: 101
+      }
     ];
     const items2 = [
       {
+        key: "2-1",
         label: "Projects",
         value: model._allProjectsMeta.count.toLocaleString()
       },
-      { label: "Users", value: model._allUsersMeta.count.toLocaleString() },
       {
+        key: "2-2",
+        label: "Users",
+        value: model._allUsersMeta.count.toLocaleString()
+      },
+      {
+        key: "2-3",
         label: "Assessments",
         value: model._allAssessmentsMeta.count.toLocaleString()
       },
-      { label: "Sign Ins", value: Math.trunc(1234).toLocaleString() }
+      {
+        key: "2-4",
+        label: "Sign Ins",
+        value: Math.trunc(1234).toLocaleString()
+      }
     ];
     return (
       <Container>
