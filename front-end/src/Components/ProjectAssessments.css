@@ -7,6 +7,7 @@
   line-height: 1em;
   color: #273cb3;
   margin-top: 0px;
+  margin-bottom: 4px;
 }
 
 .projectAssessments .editButton {
@@ -15,4 +16,14 @@
 
 .projectAssessments .header2 {
   font-size: 1.75em;
+}
+
+.projectAssessments .header .icon {
+  font-size: 1.1em;
+  margin-left: 0.3em;
+}
+
+.projectAssessments .notFound {
+  font-size: 1.25rem;
+  margin: 1rem;
 }

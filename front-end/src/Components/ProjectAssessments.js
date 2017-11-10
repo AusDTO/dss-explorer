@@ -6,35 +6,28 @@ import moment from "moment";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
 import { Loading, Error } from "./Basics.js";
-import {
-  Container,
-  Button,
-  Table,
-  Item,
-  Segment,
-  Popup,
-  Header
-} from "semantic-ui-react";
+import { Container, Button, Table, Item, Segment, Popup, Header, Icon } from "semantic-ui-react";
 import GoalsLightBoard from "./GoalsLightBoard";
 import Timestamp from "./Timestamp";
 import DateInput from "./DateInput";
 import Breadcrumbs from "./Breadcrumbs";
 import "./ProjectAssessments.css";
 import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
+import ProjectDetails from "./ProjectDetails";
 
 class ProjectAssessments extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { view: "timeline" };
+    this.state = {};
   }
 
   componentWillReceiveProps = newProps => {
     var model = get(newProps.data, "Project");
 
-    if (
-      !model ||
-      (this.state.updatedAt && model.updatedAt === this.state.updatedAt)
-    ) {
+    if (!model) {
+      return;
+    }
+    if (this.state.updatedAt && model.updatedAt === this.state.updatedAt) {
       return;
     }
 
@@ -63,12 +56,7 @@ class ProjectAssessments extends React.Component {
   };
 
   handleSave = ({ id, contact, leadAssessor, nextAssessment }) => {
-    console.log(
-      "updating project details",
-      contact,
-      leadAssessor,
-      nextAssessment
-    );
+    console.log("updating project details", contact, leadAssessor, nextAssessment);
     this.props
       .updateProjectMutation({
         variables: {
@@ -126,11 +114,12 @@ class ProjectAssessments extends React.Component {
         <Segment>
           <CreateOrEditProjectDialog
             project={model}
-            trigger={
-              <Button className="editButton" icon="pencil" content="Edit" />
-            }
+            trigger={<Button className="editButton" icon="pencil" content="Edit" />}
           />
-          <Header>{model.name}</Header>
+          <Header>
+            {model.name}
+            <Popup content={<ProjectDetails model={model} />} trigger={<Icon name="info circle" />} />
+          </Header>
           <DateInput
             fluid
             id="nextAssessment"
@@ -143,9 +132,7 @@ class ProjectAssessments extends React.Component {
         <Table size="small">
           <Table.Header fullWidth>
             <Table.Row>
-              <Table.HeaderCell className="header2">
-                Assessments
-              </Table.HeaderCell>
+              <Table.HeaderCell className="header2">Assessments</Table.HeaderCell>
 
               <Table.HeaderCell textAlign="right">
                 <Popup
@@ -155,8 +142,7 @@ class ProjectAssessments extends React.Component {
                       positive
                       icon="plus"
                       content="New"
-                      onClick={() =>
-                        this.handleCreate(model.id, model.leadAssessor)}
+                      onClick={() => this.handleCreate(model.id, model.leadAssessor)}
                     />
                   }
                 />
@@ -189,6 +175,11 @@ class ProjectAssessments extends React.Component {
                 </Table.Row>
               );
             })}
+            {!model.assessments.length && (
+              <Table.Row>
+                <div className="notFound">No assessments yet</div>
+              </Table.Row>
+            )}
           </Table.Body>
         </Table>
       </Container>
@@ -231,18 +222,8 @@ const ProjectAssessmentsQuery = gql`
 `;
 
 const UpdateProjectMutation = gql`
-  mutation UpdateProjectMutation(
-    $projId: ID!
-    $contact: String
-    $leadAssessor: String
-    $nextAssessment: DateTime
-  ) {
-    updateProject(
-      id: $projId
-      contact: $contact
-      leadAssessor: $leadAssessor
-      nextAssessment: $nextAssessment
-    ) {
+  mutation UpdateProjectMutation($projId: ID!, $contact: String, $leadAssessor: String, $nextAssessment: DateTime) {
+    updateProject(id: $projId, contact: $contact, leadAssessor: $leadAssessor, nextAssessment: $nextAssessment) {
       id
       updatedAt
       contact
@@ -253,16 +234,8 @@ const UpdateProjectMutation = gql`
 `;
 
 const CreateAssessmentMutation = gql`
-  mutation CreateAssessmentMutation(
-    $projId: ID!
-    $when: DateTime!
-    $leadAssessor: String
-  ) {
-    createAssessment(
-      when: $when
-      projectId: $projId
-      leadAssessor: $leadAssessor
-    ) {
+  mutation CreateAssessmentMutation($projId: ID!, $when: DateTime!, $leadAssessor: String) {
+    createAssessment(when: $when, projectId: $projId, leadAssessor: $leadAssessor) {
       id
     }
   }

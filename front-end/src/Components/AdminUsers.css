@@ -3,3 +3,8 @@
   float: left;
   margin-right: 1em;
 }
+
+.adminUsers .top {
+  display: flex;
+  justify-content: space-between;
+}

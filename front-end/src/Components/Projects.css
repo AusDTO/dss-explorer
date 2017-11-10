@@ -1,15 +1,7 @@
-.projects .newButton {
-  float: right;
-}
 
 .projects h2 {
-  font-size: 2rem !important;
+  font-size: 2rem ;
   display: inline-block;
-  margin-right: 2em !important;
-  color: #273cb3 !important;
+  margin-right: 2em ;
+  color: #273cb3 ;
 }
-
-/* .projects .ui.table thead th {
-  padding-top: 0;
-  padding-bottom: 0;
-} */

@@ -7,7 +7,7 @@ import { get } from "lodash";
 
 import { Loading, Error } from "./Basics";
 import Timestamp from "./Timestamp";
-import { Label, Container, Item, Header, Button, Table, Popup } from "semantic-ui-react";
+import { Label, Container, Item, Button, Table, Popup } from "semantic-ui-react";
 import CreateOrEditProjectDialog from "./CreateOrEditProjectDialog";
 import { CalculateStageColor, CalculateStageText } from "./Stage";
 
@@ -44,7 +44,7 @@ class ProjectList extends React.Component {
           <Table.Header fullWidth>
             <Table.Row>
               <Table.HeaderCell verticalAlign="middle">
-                <Header as="h2">Projects</Header>
+                <h2>Projects</h2>
                 <Button.Group toggle>
                   <Popup
                     content="Sort projects by name"
@@ -76,13 +76,10 @@ class ProjectList extends React.Component {
               <Table.HeaderCell>Contact </Table.HeaderCell>
               <Table.HeaderCell>Lead Assessor </Table.HeaderCell>
 
-              <Table.HeaderCell>
+              <Table.HeaderCell textAlign="center">
                 <CreateOrEditProjectDialog
                   trigger={
-                    <Popup
-                      content="Create a new project"
-                      trigger={<Button className="newButton" positive icon="plus" content="New" />}
-                    />
+                    <Popup content="Create a new project" trigger={<Button positive icon="plus" content="New" />} />
                   }
                 />
               </Table.HeaderCell>
@@ -94,7 +91,7 @@ class ProjectList extends React.Component {
               const when = moment(proj.nextAssessment);
               const now = moment();
               const overdue = when.isValid() && when.isBefore(now);
-              const upcoming = when.isValid() && when.isAfter(now) && when.isBefore(now.add("45", "day"));
+              const upcoming = when.isValid() && when.isAfter(now) && when.isBefore(now.add("30", "day"));
               return (
                 <Table.Row key={proj.id}>
                   <Table.Cell>

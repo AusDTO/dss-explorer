@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
-import { Card, Item, Segment, Search, Transition } from "semantic-ui-react";
+import { Item, Segment, Search, Transition } from "semantic-ui-react";
 import { Loading, TopInnerHeading, Error } from "./Basics.js";
 import Timestamp from "./Timestamp";
 import "./AdminUsers.css";
@@ -19,7 +19,14 @@ class AdminUsers extends React.Component {
 
   render() {
     if (this.props.data.loading) {
-      return <Loading />;
+      return (
+        <Segment className="adminUsers">
+          <div className="top">
+            <TopInnerHeading>Users</TopInnerHeading>
+          </div>
+          <Loading />
+        </Segment>
+      );
     }
     if (this.props.data.error) {
       return <Error data={this.props.data} />;
@@ -29,8 +36,15 @@ class AdminUsers extends React.Component {
       : this.props.data.allUsers;
     return (
       <Segment className="adminUsers">
-        <TopInnerHeading>Users</TopInnerHeading>
-        <Search value={this.state.searchValue} onSearchChange={this.handleSearchChanged} minCharacters={9999} />
+        <div className="top">
+          <TopInnerHeading>Users</TopInnerHeading>
+          <Search
+            value={this.state.searchValue}
+            onSearchChange={this.handleSearchChanged}
+            minCharacters={9999}
+            input={{ placeholder: "find by name..." }}
+          />
+        </div>
         <Transition.Group as={Item.Group} divided animation="fly left">
           {filteredUsers.map(x => (
             <Item key={x.id}>
@@ -45,7 +59,7 @@ class AdminUsers extends React.Component {
               </Item.Content>
             </Item>
           ))}
-          {filteredUsers.length === 0 && <p>No matching users </p>}
+          {filteredUsers.length === 0 && <div className="noMatches">No matching users </div>}
         </Transition.Group>
       </Segment>
     );
